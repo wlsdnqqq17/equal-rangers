@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
         val sharedPreferences = getSharedPreferences("login_prefs", Context.MODE_PRIVATE)
         val userId = sharedPreferences.getString("user_id", null)
 
-        if (userId != null) {
+        if (userId == null) {
             Log.d("MainActivity", "User ID: $userId")
             Toast.makeText(this, "Welcome back, User ID: $userId", Toast.LENGTH_LONG).show()
         } else {

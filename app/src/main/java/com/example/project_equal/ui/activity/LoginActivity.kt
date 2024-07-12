@@ -14,7 +14,6 @@ import com.example.project_equal.network.ApiService
 import com.example.project_equal.network.LoginRequest
 import com.example.project_equal.network.LoginResponse
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -32,16 +31,11 @@ class LoginActivity : AppCompatActivity() {
 
         sharedPreferences = getSharedPreferences("login_prefs", Context.MODE_PRIVATE)
 
-        val logging = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        }
-        val httpClient = OkHttpClient.Builder()
-            .addInterceptor(logging)
-            .build()
+        val client = OkHttpClient.Builder().build()
 
         val retrofit = Retrofit.Builder()
             .baseUrl("http://52.78.68.85:8000/")
-            .client(httpClient)
+            .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
