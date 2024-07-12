@@ -1,4 +1,4 @@
-package com.example.project_equal
+package com.example.project_equal.ui.activity
 
 import android.content.Context
 import android.content.Intent
@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.project_equal.R
 import com.example.project_equal.network.ApiService
 import com.example.project_equal.network.LoginRequest
 import com.example.project_equal.network.LoginResponse

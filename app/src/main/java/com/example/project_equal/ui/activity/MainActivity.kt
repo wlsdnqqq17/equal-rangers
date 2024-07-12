@@ -1,4 +1,4 @@
-package com.example.project_equal
+package com.example.project_equal.ui.activity
 
 import android.content.Context
 import android.content.Intent
@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.MotionEvent
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.project_equal.R
 
 class MainActivity : AppCompatActivity() {
 
@@ -17,7 +18,7 @@ class MainActivity : AppCompatActivity() {
         val sharedPreferences = getSharedPreferences("login_prefs", Context.MODE_PRIVATE)
         val userId = sharedPreferences.getString("user_id", null)
 
-        if (userId == null) {
+        if (userId != null) {
             Log.d("MainActivity", "User ID: $userId")
             Toast.makeText(this, "Welcome back, User ID: $userId", Toast.LENGTH_LONG).show()
         } else {
