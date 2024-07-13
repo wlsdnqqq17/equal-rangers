@@ -4,11 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- 상단 중앙에 배치된 텍스트 뷰 -->
 
-    <!-- 중앙에 배치된 텍스트 뷰 -->
     <TextView
-        android:id="@+id/textViewTop"
+        android:id="@+id/problem1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="1111"
@@ -16,28 +14,27 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/textViewCenter"/>
+        app:layout_constraintBottom_toTopOf="@id/problem2"/>
 
-    <!-- 하단 중앙에 배치된 텍스트 뷰 -->
 
     <TextView
-        android:id="@+id/textViewCenter"
+        android:id="@+id/problem2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="4474"
         android:textSize="18sp"
-        app:layout_constraintTop_toBottomOf="@id/textViewTop"
-        app:layout_constraintBottom_toTopOf="@id/textViewBottom"
+        app:layout_constraintTop_toBottomOf="@id/problem1"
+        app:layout_constraintBottom_toTopOf="@id/problem3"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
 
     <TextView
-        android:id="@+id/textViewBottom"
+        android:id="@+id/problem3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="4568"
         android:textSize="18sp"
-        app:layout_constraintTop_toBottomOf="@id/textViewCenter"
+        app:layout_constraintTop_toBottomOf="@id/problem2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
