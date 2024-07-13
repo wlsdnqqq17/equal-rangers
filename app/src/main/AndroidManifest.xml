@@ -27,6 +27,7 @@
         <activity android:name=".ui.activity.LoginActivity"/>
         <activity android:name=".ui.activity.HomeActivity"/>
         <activity android:name=".ui.activity.SignUpActivity"/>
+        <activity android:name=".ui.activity.GameActivity"/>
     </application>
 
 </manifest>
