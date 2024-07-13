@@ -3,13 +3,59 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.activity.ProblemActivity">
+    tools:context=".ui.activity.ProblemActivity"
+    android:id="@+id/root_layout">
 
     <TextView
         android:id="@+id/problem_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Problem"
-        android:layout_centerInParent="true"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"/>
 
+    <Button
+        android:id="@+id/plus_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="plus"
+        android:layout_below="@id/problem_text"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"/>
+
+    <Button
+        android:id="@+id/minus_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="minus"
+        android:layout_below="@id/plus_button"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"/>
+
+    <Button
+        android:id="@+id/multiply_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="multiply"
+        android:layout_below="@id/minus_button"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"/>
+
+    <Button
+        android:id="@+id/divide_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="divide"
+        android:layout_below="@id/multiply_button"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"/>
+
+    <Button
+        android:id="@+id/delete_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"/>
 </RelativeLayout>
