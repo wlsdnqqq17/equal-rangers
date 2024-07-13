@@ -28,4 +28,13 @@ interface ApiService {
 
     @POST("/api/logout/")
     fun logout(@Body request: LogoutRequest): Call<Void>
+
+    @POST("/api/ranks/")
+    fun updateRank(
+        @Header("Authorization") token: String,
+        @Body rankData: RankData
+    ): Call<RankResponse>
+
+    @GET("/api/ranks/") // 실제 API 엔드포인트에 맞게 경로 설정
+    fun getRankings(): Call<List<RankData>>
 }
