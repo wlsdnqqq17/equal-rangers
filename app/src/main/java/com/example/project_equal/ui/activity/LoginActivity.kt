@@ -13,12 +13,15 @@ import com.example.project_equal.R
 import com.example.project_equal.network.ApiService
 import com.example.project_equal.network.LoginRequest
 import com.example.project_equal.network.LoginResponse
-import okhttp3.OkHttpClient
+import com.example.project_equal.ui.activity.MainActivity
+import com.example.project_equal.ui.activity.SignUpActivity
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.File
 
 class LoginActivity : AppCompatActivity() {
 
@@ -31,11 +34,8 @@ class LoginActivity : AppCompatActivity() {
 
         sharedPreferences = getSharedPreferences("login_prefs", Context.MODE_PRIVATE)
 
-        val client = OkHttpClient.Builder().build()
-
         val retrofit = Retrofit.Builder()
             .baseUrl("http://52.78.68.85:8000/")
-            .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -45,10 +45,10 @@ class LoginActivity : AppCompatActivity() {
         loginButton.setOnClickListener {
             val userIdInput: EditText = findViewById(R.id.inputId)
             val passwordInput: EditText = findViewById(R.id.inputPassword)
-            val userid = userIdInput.text.toString()
+            val username = userIdInput.text.toString()
             val password = passwordInput.text.toString()
 
-            val loginRequest = LoginRequest(userid = userid, password = password)
+            val loginRequest = LoginRequest(username, password)
 
             Log.d("LoginActivity", "Sending login request: $loginRequest")
 
@@ -56,18 +56,34 @@ class LoginActivity : AppCompatActivity() {
                 override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                     if (response.isSuccessful) {
                         val loginResponse = response.body()
-                        Log.d("LoginActivity", "Login successful: ${loginResponse?.user_id}")
-                        Toast.makeText(this@LoginActivity, "Login successful: ${loginResponse?.user_id}", Toast.LENGTH_LONG).show()
+                        if (loginResponse != null) {
+                            val tokensJson = JSONObject()
+                            Log.d("LOG", "BODY IS : $loginResponse")
+                            tokensJson.put("access", loginResponse.accessToken)
+                            tokensJson.put("refresh", loginResponse.refreshToken)
+                            val editor = sharedPreferences.edit()
+//
+                            val tokens = tokensJson.toString()
+                            editor.putString("user_token", tokens)
+                            editor.putString("user_id", username)
+                            editor.apply()
 
-                        // Save login info to SharedPreferences
-                        val editor = sharedPreferences.edit()
-                        editor.putString("user_id", loginResponse?.user_id)
-                        editor.apply()
+                            Log.d("LoginActivity", "Tokens: $tokens")
 
-                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                        startActivity(intent)
+                            // 토큰 저장
+                            File(filesDir, "tokens.json").writeText(tokens)
+
+                            Toast.makeText(this@LoginActivity, "Login successful!", Toast.LENGTH_SHORT).show()
+
+                            val intent = Intent(this@LoginActivity, HomeActivity::class.java)
+                            startActivity(intent)
+                            finish() // LoginActivity 종료
+                        } else {
+                            Log.e("LoginActivity", "Login response body is null")
+                            Toast.makeText(this@LoginActivity, "Login failed: Empty response body", Toast.LENGTH_LONG).show()
+                        }
                     } else {
-                        Log.e("LoginActivity", "Login failed with status code: ${response.message()}")
+                        Log.e("LoginActivity", "Login failed with status code: ${response.code()}")
                         Toast.makeText(this@LoginActivity, "Login failed with status code: ${response.code()}", Toast.LENGTH_LONG).show()
                     }
                 }
