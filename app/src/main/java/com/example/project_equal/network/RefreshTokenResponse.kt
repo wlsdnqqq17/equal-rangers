@@ -2,11 +2,10 @@ package com.example.project_equal.network
 
 import com.google.gson.annotations.SerializedName
 
-data class LoginResponse(
+data class RefreshTokenResponse(
     @SerializedName("access")
-    val accessToken: String?,
+    val accessToken: String,
 
     @SerializedName("refresh")
-    val refreshToken: String?) {
-
-}
+    val refreshToken: String
+)

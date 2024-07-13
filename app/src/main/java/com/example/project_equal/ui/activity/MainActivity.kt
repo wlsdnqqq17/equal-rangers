@@ -16,11 +16,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val sharedPreferences = getSharedPreferences("login_prefs", Context.MODE_PRIVATE)
-        val token = sharedPreferences.getString("token", null)
+        val userToken = sharedPreferences.getString("user_token", null)
 
-        if (token == null) {
-            Log.d("MainActivity", "User ID: $token")
-            Toast.makeText(this, "Welcome back, User ID: $token", Toast.LENGTH_LONG).show()
+        Log.d("MainActivity", "User Token: ${userToken}")
+        if (userToken != null) {
+            Log.d("MainActivity", "User Token: $userToken")
+            Toast.makeText(this, "Welcome back, User ID: $userToken", Toast.LENGTH_LONG).show()
         } else {
             Log.d("MainActivity", "No login info found, redirecting to LoginActivity")
             Toast.makeText(this, "Please log in", Toast.LENGTH_LONG).show()
