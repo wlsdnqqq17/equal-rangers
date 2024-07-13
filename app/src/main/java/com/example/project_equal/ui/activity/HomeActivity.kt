@@ -60,7 +60,7 @@ class HomeActivity : AppCompatActivity() {
         }
         val startGameButton = findViewById<Button>(R.id.btn_start_game)
         startGameButton.setOnClickListener {
-            val intent = Intent(this, GameActivity::class.java)
+            val intent = Intent(this, ThreeChoiceActivity::class.java)
             startActivity(intent)
         }
 
