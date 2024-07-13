@@ -65,6 +65,7 @@ class LoginActivity : AppCompatActivity() {
 //
                             val tokens = tokensJson.toString()
                             editor.putString("user_token", tokens)
+                            editor.putString("user_id", username)
                             editor.apply()
 
                             Log.d("LoginActivity", "Tokens: $tokens")

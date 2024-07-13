@@ -4,6 +4,7 @@ import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface ApiService {
@@ -16,9 +17,10 @@ interface ApiService {
     @POST("/api/token/refresh/")
     fun refreshToken(@Body request: RefreshTokenRequest): Call<RefreshTokenResponse>
 
+    @PUT("/api/players/{userId}/update")
+    fun updatePlayerInfo(@Path("userId") userId: String, @Body playerData: PlayerData): Call<PlayerData>
 
-    suspend fun getPlayerInfo(
-        @Header("Authorization") authorization: String,
-        @Path("user_id") user_id: String
-    ): PlayerData
+
+    @POST("/api/logout/")
+    fun logout(@Body request: LogoutRequest): Call<Void>
 }

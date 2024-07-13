@@ -92,4 +92,43 @@ class PlayerManager(private val apiService: ApiService, private val context: Con
             }
         }
     }
+
+    suspend fun updatePlayerInfo(userId: String, playerData: PlayerData, accessToken: String): PlayerData {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = apiService.updatePlayerInfo(userId, playerData).execute()
+                if (response.isSuccessful) {
+                    response.body() ?: throw IOException("Failed to update player information: empty response body")
+                } else {
+                    throw IOException("Failed to update player information: ${response.code()}")
+                }
+            } catch (e: IOException) {
+                throw IOException("Failed to update player information: ${e.message}", e)
+            }
+        }
+    }
+
+    suspend fun updatePlayerInfoPartial(userId: String, partialData: Map<String, Any>, accessToken: String): PlayerData {
+        return withContext(Dispatchers.IO) {
+            try {
+                val currentPlayer = getPlayerInfo(userId, accessToken)
+                val updatedData = currentPlayer.copy(
+                    userId = partialData["userId"] as String? ?: currentPlayer.userId,
+                    nickname = partialData["nickname"] as String? ?: currentPlayer.nickname,
+                    email = partialData["email"] as String? ?: currentPlayer.email,
+                    gold = partialData["gold"] as Int? ?: currentPlayer.gold,
+                    highscore = partialData["highscore"] as Int? ?: currentPlayer.highscore
+                    // Handle other fields similarly
+                )
+                val response = apiService.updatePlayerInfo(userId, updatedData).execute()
+                if (response.isSuccessful) {
+                    response.body() ?: throw IOException("Failed to update player information: empty response body")
+                } else {
+                    throw IOException("Failed to update player information: ${response.code()}")
+                }
+            } catch (e: IOException) {
+                throw IOException("Failed to update player information: ${e.message}", e)
+            }
+        }
+    }
 }
