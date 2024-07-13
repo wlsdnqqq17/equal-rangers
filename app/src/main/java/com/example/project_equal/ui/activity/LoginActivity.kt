@@ -13,7 +13,6 @@ import com.example.project_equal.R
 import com.example.project_equal.network.ApiService
 import com.example.project_equal.network.LoginRequest
 import com.example.project_equal.network.LoginResponse
-import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -31,11 +30,9 @@ class LoginActivity : AppCompatActivity() {
 
         sharedPreferences = getSharedPreferences("login_prefs", Context.MODE_PRIVATE)
 
-        val client = OkHttpClient.Builder().build()
 
         val retrofit = Retrofit.Builder()
             .baseUrl("http://52.78.68.85:8000/")
-            .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -48,7 +45,7 @@ class LoginActivity : AppCompatActivity() {
             val userid = userIdInput.text.toString()
             val password = passwordInput.text.toString()
 
-            val loginRequest = LoginRequest(userid = userid, password = password)
+            val loginRequest = LoginRequest(username = userid, password = password)
 
             Log.d("LoginActivity", "Sending login request: $loginRequest")
 
@@ -56,12 +53,12 @@ class LoginActivity : AppCompatActivity() {
                 override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                     if (response.isSuccessful) {
                         val loginResponse = response.body()
-                        Log.d("LoginActivity", "Login successful: ${loginResponse?.user_id}")
-                        Toast.makeText(this@LoginActivity, "Login successful: ${loginResponse?.user_id}", Toast.LENGTH_LONG).show()
+                        Log.d("LoginActivity", "Login successful: ${loginResponse?.token}")
+                        Toast.makeText(this@LoginActivity, "Login successful: ${loginResponse?.token}", Toast.LENGTH_LONG).show()
 
                         // Save login info to SharedPreferences
                         val editor = sharedPreferences.edit()
-                        editor.putString("user_id", loginResponse?.user_id)
+                        editor.putString("token", loginResponse?.token)
                         editor.apply()
 
                         val intent = Intent(this@LoginActivity, MainActivity::class.java)

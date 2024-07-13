@@ -5,7 +5,7 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface ApiService {
-    @POST("/api/login/")
+    @POST("/api/token/")
     fun login(@Body request: LoginRequest): Call<LoginResponse>
 
     @POST("/api/signup/")
