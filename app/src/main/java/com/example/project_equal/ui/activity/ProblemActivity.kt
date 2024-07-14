@@ -21,13 +21,11 @@ class ProblemActivity : AppCompatActivity() {
     private val TAG = "ProblemActivity"
     private lateinit var deleteButton: Button
     private lateinit var resultTextView: TextView
-    private var currentExpression: Expression? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_problem)
 
-        val problemTextView: TextView = findViewById(R.id.problem_text)
         resultTextView = findViewById(R.id.result_text)
         deleteButton = findViewById(R.id.delete_button)
 
@@ -38,10 +36,10 @@ class ProblemActivity : AppCompatActivity() {
         val divideButton: Button = findViewById(R.id.divide_button)
 
         // Set button listeners
-        plusButton.setOnClickListener { createDraggableItem(Operator.Addition) }
-        minusButton.setOnClickListener { createDraggableItem(Operator.Subtraction) }
-        multiplyButton.setOnClickListener { createDraggableItem(Operator.Multiplication) }
-        divideButton.setOnClickListener { createDraggableItem(Operator.Division) }
+        plusButton.setOnClickListener { createDraggableItem(Operator.Addition()) }
+        minusButton.setOnClickListener { createDraggableItem(Operator.Subtraction()) }
+        multiplyButton.setOnClickListener { createDraggableItem(Operator.Multiplication()) }
+        divideButton.setOnClickListener { createDraggableItem(Operator.Division()) }
 
         val layout = findViewById<RelativeLayout>(R.id.root_layout)
         layout.setOnDragListener(dragListener)
@@ -98,7 +96,7 @@ class ProblemActivity : AppCompatActivity() {
                 is Operator.Division -> "[] / []"
                 else -> "[]"
             }
-            tag = operator // 태그에 Operator 객체 저장
+            tag = operator // 각 드래거블이 독립적인 Operator 객체를 가짐
             textSize = 20f
             setPadding(16, 16, 16, 16)
             setBackgroundResource(android.R.color.holo_blue_light)
@@ -218,6 +216,7 @@ class ProblemActivity : AppCompatActivity() {
     private fun updateOperatorView(operatorView: TextView, numberView: TextView) {
         val operator = operatorView.tag as? Operator ?: return
         val inputExpression = numberView.tag as? Expression ?: return
+        Log.d(TAG, "inputExpression: $inputExpression")
 
         if (operator.leftExpression == null) {
             operator.leftExpression = inputExpression
@@ -236,7 +235,8 @@ class ProblemActivity : AppCompatActivity() {
 
         operatorView.text = updatedText
         numberView.visibility = View.GONE // Hide the number view after using it
-
+        Log.d(TAG, "Left expression: ${operator.leftExpression?.string}")
+        Log.d(TAG, "Right expression: ${operator.rightExpression?.string}")
         // Check if the operator view is fully populated and update its tag with the new expression
         if (operator.leftExpression != null && operator.rightExpression != null) {
             val newExpression = Expression.BinaryExpression(operator.leftExpression!!, operator, operator.rightExpression!!)
@@ -244,6 +244,8 @@ class ProblemActivity : AppCompatActivity() {
             resultTextView.text = "${newExpression.value} (${newExpression.string})"
             Log.d(TAG, "Updated operator view: $updatedText")
             Log.d(TAG, "Expression created: ${newExpression.value} (${newExpression.string})")
+            operator.leftExpression = null
+            operator.rightExpression = null
         }
     }
 }

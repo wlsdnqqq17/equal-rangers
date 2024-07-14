@@ -6,29 +6,34 @@ sealed class Operator(val symbol: String) {
 
     abstract fun apply(left: Int, right: Int?): Int
 
-    object Addition : Operator("+") {
+    class Addition : Operator("+") {
         override fun apply(left: Int, right: Int?): Int {
             return left + (right ?: 0)
         }
     }
 
-    object Subtraction : Operator("-") {
+    class Subtraction : Operator("-") {
         override fun apply(left: Int, right: Int?): Int {
             return left - (right ?: 0)
         }
     }
 
-    object Multiplication : Operator("*") {
+    class Multiplication : Operator("*") {
         override fun apply(left: Int, right: Int?): Int {
             return left * (right ?: 1)
         }
     }
 
-    object Division : Operator("/") {
+    class Division : Operator("/") {
         override fun apply(left: Int, right: Int?): Int {
             if (right == 0) throw ArithmeticException("Division by zero")
             return left / (right ?: 1)
         }
     }
 
+    class Negation : Operator("-") {
+        override fun apply(left: Int, right: Int?): Int {
+            return -left
+        }
+    }
 }
