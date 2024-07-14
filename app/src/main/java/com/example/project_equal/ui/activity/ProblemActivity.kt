@@ -2,6 +2,7 @@ package com.example.project_equal.ui.activity
 
 import android.content.ClipData
 import android.content.ClipDescription
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.DragEvent
@@ -31,6 +32,8 @@ class ProblemActivity : AppCompatActivity() {
         val minusButton: Button = findViewById(R.id.minus_button)
         val multiplyButton: Button = findViewById(R.id.multiply_button)
         val divideButton: Button = findViewById(R.id.divide_button)
+
+        val next_btn: Button = findViewById(R.id.next_button)
         deleteButton = findViewById(R.id.delete_button)
 
         plusButton.setOnClickListener { createDraggableItem("plus", "operator") }
@@ -46,6 +49,11 @@ class ProblemActivity : AppCompatActivity() {
             if (char.isDigit()) {
                 createDraggableItem(char.toString(), "number")
             }
+        }
+        next_btn.setOnClickListener(){
+            val intent = Intent(this, GameResult::class.java)
+            intent.putExtra("PROBLEM_RESULT", 10)
+            startActivity(intent)
         }
     }
 
@@ -197,4 +205,5 @@ class ProblemActivity : AppCompatActivity() {
             Log.d(TAG, "Draggable item created: $text")
         }
     }
+
 }
