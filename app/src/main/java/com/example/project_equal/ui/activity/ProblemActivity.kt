@@ -21,6 +21,7 @@ class ProblemActivity : AppCompatActivity() {
     private val TAG = "ProblemActivity"
     private lateinit var deleteButton: Button
     private lateinit var resultTextView: TextView
+    private var currentExpression: Expression? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,6 +69,7 @@ class ProblemActivity : AppCompatActivity() {
 
                     view.startDragAndDrop(dragData, dragShadow, view, 0)
                     view.visibility = View.INVISIBLE
+                    view.tag = Expression.Number(number) // 태그에 Expression 객체 저장
                     true
                 } else {
                     false
@@ -96,6 +98,7 @@ class ProblemActivity : AppCompatActivity() {
                 is Operator.Division -> "[] / []"
                 else -> "[]"
             }
+            tag = operator // 태그에 Operator 객체 저장
             textSize = 20f
             setPadding(16, 16, 16, 16)
             setBackgroundResource(android.R.color.holo_blue_light)
@@ -131,16 +134,13 @@ class ProblemActivity : AppCompatActivity() {
     private val dragListener = View.OnDragListener { v, event ->
         when (event.action) {
             DragEvent.ACTION_DRAG_STARTED -> {
-                Log.d(TAG, "Drag started")
                 event.clipDescription.hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)
             }
             DragEvent.ACTION_DRAG_ENTERED -> {
-                Log.d(TAG, "Drag entered")
                 true
             }
             DragEvent.ACTION_DRAG_LOCATION -> true
             DragEvent.ACTION_DRAG_EXITED -> {
-                Log.d(TAG, "Drag exited")
                 true
             }
             DragEvent.ACTION_DROP -> {
@@ -160,7 +160,6 @@ class ProblemActivity : AppCompatActivity() {
 
                 if (x >= deleteButtonX && x <= deleteButtonX + deleteButtonWidth &&
                     y >= deleteButtonY && y <= deleteButtonY + deleteButtonHeight) {
-                    Log.d(TAG, "View deleted")
                 } else {
                     val layout = v as ViewGroup
                     val overlappingView = findOverlappingView(x, y, draggedView, layout)
@@ -186,7 +185,6 @@ class ProblemActivity : AppCompatActivity() {
                     val draggedView = event.localState as View
                     draggedView.visibility = View.VISIBLE
                 }
-                Log.d(TAG, "Drag ended")
                 true
             }
             else -> false
@@ -203,6 +201,7 @@ class ProblemActivity : AppCompatActivity() {
                 val childY = location[1]
                 if (x >= childX && x <= childX + child.width &&
                     y >= childY && y <= childY + child.height) {
+                    Log.d(TAG, "Overlapping view found: ${child.javaClass.simpleName}")
                     return child
                 }
             }
@@ -212,21 +211,39 @@ class ProblemActivity : AppCompatActivity() {
 
     private fun isOperator(view: TextView): Boolean {
         val text = view.text.toString()
-        return text.contains("[] + []") || text.contains("[] - []") ||
-                text.contains("[] * []") || text.contains("[] / []")
+        return text.contains("+") || text.contains("-") ||
+                text.contains("*") || text.contains("/") && text.contains("[]")
     }
 
     private fun updateOperatorView(operatorView: TextView, numberView: TextView) {
+        val operator = operatorView.tag as? Operator ?: return
+        val inputExpression = numberView.tag as? Expression ?: return
+
+        if (operator.leftExpression == null) {
+            operator.leftExpression = inputExpression
+        } else if (operator.rightExpression == null) {
+            operator.rightExpression = inputExpression
+        }
+
         val operatorText = operatorView.text.toString()
-        val numberText = numberView.text.toString()
+        val numberText = inputExpression.string
 
         val updatedText = when {
             operatorText.startsWith("[]") -> operatorText.replaceFirst("[]", numberText)
-            operatorText.endsWith("[]") -> operatorText.replaceFirst("[]", numberText)
+            operatorText.contains("[]") -> operatorText.replaceFirst("[]", numberText)
             else -> operatorText
         }
 
         operatorView.text = updatedText
-        Log.d(TAG, "Updated operator view: $updatedText")
+        numberView.visibility = View.GONE // Hide the number view after using it
+
+        // Check if the operator view is fully populated and update its tag with the new expression
+        if (operator.leftExpression != null && operator.rightExpression != null) {
+            val newExpression = Expression.BinaryExpression(operator.leftExpression!!, operator, operator.rightExpression!!)
+            operatorView.tag = newExpression
+            resultTextView.text = "${newExpression.value} (${newExpression.string})"
+            Log.d(TAG, "Updated operator view: $updatedText")
+            Log.d(TAG, "Expression created: ${newExpression.value} (${newExpression.string})")
+        }
     }
 }

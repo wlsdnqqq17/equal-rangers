@@ -32,19 +32,6 @@ class ExpressionTest {
         assertEquals(27, multiplyExpr.value)
     }
 
-    @Test
-    //sqrt(9)
-    fun testSquareRootExpression() {
-        val sqrtExpr = Expression.UnaryExpression(Operator.SquareRoot, Expression.Number(9))
-        assertEquals(3, sqrtExpr.value)
-    }
-
-    @Test
-    //square(5)
-    fun testSquareExpression() {
-        val squareExpr = Expression.UnaryExpression(Operator.Square, Expression.Number(5))
-        assertEquals(25, squareExpr.value)
-    }
 
     @Test
     //(2+3)*(7-4)

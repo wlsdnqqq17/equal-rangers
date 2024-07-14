@@ -1,43 +1,34 @@
-// Operator.kt
 package com.example.project_equal
 
-sealed class Operator {
-    abstract fun apply(left: Int?, right: Int?): Int
+sealed class Operator(val symbol: String) {
+    var leftExpression: Expression? = null
+    var rightExpression: Expression? = null
 
-    object Addition : Operator() {
-        override fun apply(left: Int?, right: Int?): Int {
-            return (left ?: 0) + (right ?: 0)
+    abstract fun apply(left: Int, right: Int?): Int
+
+    object Addition : Operator("+") {
+        override fun apply(left: Int, right: Int?): Int {
+            return left + (right ?: 0)
         }
     }
 
-    object Subtraction : Operator() {
-        override fun apply(left: Int?, right: Int?): Int {
-            return (left ?: 0) - (right ?: 0)
+    object Subtraction : Operator("-") {
+        override fun apply(left: Int, right: Int?): Int {
+            return left - (right ?: 0)
         }
     }
 
-    object Multiplication : Operator() {
-        override fun apply(left: Int?, right: Int?): Int {
-            return (left ?: 0) * (right ?: 0)
+    object Multiplication : Operator("*") {
+        override fun apply(left: Int, right: Int?): Int {
+            return left * (right ?: 1)
         }
     }
 
-    object Division : Operator() {
-        override fun apply(left: Int?, right: Int?): Int {
+    object Division : Operator("/") {
+        override fun apply(left: Int, right: Int?): Int {
             if (right == 0) throw ArithmeticException("Division by zero")
-            return (left ?: 0) / (right ?: 1)
+            return left / (right ?: 1)
         }
     }
 
-    object SquareRoot : Operator() {
-        override fun apply(left: Int?, right: Int?): Int {
-            return kotlin.math.sqrt((left ?: 0).toDouble()).toInt()
-        }
-    }
-
-    object Square : Operator() {
-        override fun apply(left: Int?, right: Int?): Int {
-            return (left ?: 0) * (left ?: 0)
-        }
-    }
 }
