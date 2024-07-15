@@ -311,29 +311,33 @@ class ProblemActivity : AppCompatActivity() {
         numberView.visibility = View.GONE
         if (operator.leftExpression != null && operator.rightExpression != null) {
             val newExpression = Expression.BinaryExpression(operator.leftExpression!!, operator, operator.rightExpression!!)
-            operatorView.tag = newExpression
+
             val symbols = listOf('+', '-', '*', '/', '=', ' ')
             val filteredText = newExpression.string.filter { it !in symbols }
             val isContained = "1234".contains(filteredText)
             if (!isContained) {
                 createDraggableExpr(operator.leftExpression!!)
                 createDraggableExpr(operator.rightExpression!!)
-                operatorView.visibility = View.GONE
                 operator.leftExpression = null
                 operator.rightExpression = null
                 operatorView.text = "[] " + operator.symbol + " []"
                 createDraggableItem(operator)
+                val layout = operatorView.parent as ViewGroup
+                layout.removeView(operatorView)
             }
             if (newExpression.value == 1.0 && newExpression.operator.symbol == "=") {
                 val intent = Intent(this, GameActivity::class.java)
                 startActivity(intent)
                 finish()
             }
-            resultTextView.text = "${newExpression.value} (${newExpression.string})"
-            Log.d(TAG, "Updated operator view: $updatedText")
-            Log.d(TAG, "Expression created: ${newExpression.value} (${newExpression.string})")
-            operator.leftExpression = null
-            operator.rightExpression = null
+            if (isContained) {
+                operatorView.tag = newExpression
+                resultTextView.text = "${newExpression.value} (${newExpression.string})"
+                Log.d(TAG, "Updated operator view: $updatedText")
+                Log.d(TAG, "Expression created: ${newExpression.value} (${newExpression.string})")
+                operator.leftExpression = null
+                operator.rightExpression = null
+            }
         }
     }
 }
