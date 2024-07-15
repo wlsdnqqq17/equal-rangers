@@ -1,6 +1,6 @@
 package com.example.project_equal
 
-sealed class Operator(val symbol: String) {
+ abstract class Operator(val symbol: String) {
     var leftExpression: Expression? = null
     var rightExpression: Expression? = null
 
@@ -41,5 +41,16 @@ sealed class Operator(val symbol: String) {
         override fun apply(left: Double, right: Double?): Double {
             return -left
         }
+    }
+}
+
+fun getOperator(symbol: String): Operator? {
+    return when (symbol) {
+        "=" -> Operator.Equal()
+        "+" -> Operator.Addition()
+        "-" -> Operator.Subtraction()
+        "*" -> Operator.Multiplication()
+        "/" -> Operator.Division()
+        else -> null
     }
 }

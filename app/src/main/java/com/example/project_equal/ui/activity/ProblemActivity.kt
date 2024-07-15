@@ -16,11 +16,13 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.project_equal.Expression
 import com.example.project_equal.Operator
 import com.example.project_equal.R
+import com.example.project_equal.getOperator
 
 class ProblemActivity : AppCompatActivity() {
 
     private val TAG = "ProblemActivity"
     private lateinit var deleteButton: Button
+    private lateinit var disasamButton: Button
     private lateinit var resultTextView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,6 +31,7 @@ class ProblemActivity : AppCompatActivity() {
 
         resultTextView = findViewById(R.id.result_text)
         deleteButton = findViewById(R.id.delete_button)
+        disasamButton = findViewById(R.id.disassemble_button)
 
         // Initialize buttons
         val plusButton: Button = findViewById(R.id.plus_button)
@@ -232,7 +235,36 @@ class ProblemActivity : AppCompatActivity() {
                 val deleteButtonHeight = deleteButton.height
                 val draggedViewTag = draggedView.tag
 
-                if (x >= deleteButtonX && x <= deleteButtonX + deleteButtonWidth &&
+
+                val disasamButtonLocation = IntArray(2)
+                disasamButton.getLocationOnScreen(disasamButtonLocation)
+                val disasamButtonX = disasamButtonLocation[0]
+                val disasamButtonY = disasamButtonLocation[1]
+                val disasamButtonWidth = disasamButton.width
+                val disasamButtonHeight = disasamButton.height
+
+                if (x >= disasamButtonX && x <= disasamButtonX + disasamButtonWidth &&
+                    y >= disasamButtonY && y <= disasamButtonY + disasamButtonHeight && draggedViewTag is Operator && draggedViewTag.leftExpression != null) {
+
+                    createDraggableExpr(draggedViewTag.leftExpression!!)
+                    draggedViewTag.leftExpression = null
+                    createDraggableItem(draggedViewTag)
+
+                }
+                else if ( x >= disasamButtonX && x <= disasamButtonX + disasamButtonWidth &&
+                    y >= disasamButtonY && y <= disasamButtonY + disasamButtonHeight && draggedViewTag is Expression && draggedViewTag.string.length != 1 ) {
+
+                    if (draggedViewTag is Expression.BinaryExpression) {
+                        createDraggableExpr(draggedViewTag.left)
+                        createDraggableExpr(draggedViewTag.right)
+                    } else if (draggedViewTag is Expression.UnaryExpression) {
+                        createDraggableExpr(draggedViewTag.expr)
+                    }
+                    createDraggableItem(getOperator(draggedViewTag.symbol)!!)
+                }
+
+
+                else if (x >= deleteButtonX && x <= deleteButtonX + deleteButtonWidth &&
                     y >= deleteButtonY && y <= deleteButtonY + deleteButtonHeight && draggedViewTag is Operator && draggedViewTag.leftExpression == null) {
                 } else {
                     val layout = v as ViewGroup
@@ -252,6 +284,8 @@ class ProblemActivity : AppCompatActivity() {
                         Log.d(TAG, "View dropped at x: $x, y: $y")
                     }
                 }
+
+
                 true
             }
             DragEvent.ACTION_DRAG_ENDED -> {
@@ -314,6 +348,7 @@ class ProblemActivity : AppCompatActivity() {
 
             val symbols = listOf('+', '-', '*', '/', '=', ' ')
             val filteredText = newExpression.string.filter { it !in symbols }
+            Log.d(TAG, "Filtered text: $filteredText")
             val isContained = "1234".contains(filteredText)
             if (!isContained) {
                 createDraggableExpr(operator.leftExpression!!)
