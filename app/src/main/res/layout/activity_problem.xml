@@ -52,6 +52,15 @@
         android:text="/" />
 
     <Button
+        android:id="@+id/equal_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/minus_button"
+        android:layout_alignTop="@id/plus_button"
+        android:layout_marginStart="16dp"
+        android:text="=" />
+
+    <Button
         android:id="@+id/delete_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -59,6 +68,7 @@
         android:layout_marginTop="16dp"
         android:layout_centerHorizontal="true"
         android:text="Delete" />
+
 
     <TextView
         android:id="@+id/result_text"

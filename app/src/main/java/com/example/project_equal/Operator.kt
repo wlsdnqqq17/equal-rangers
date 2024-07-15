@@ -4,35 +4,41 @@ sealed class Operator(val symbol: String) {
     var leftExpression: Expression? = null
     var rightExpression: Expression? = null
 
-    abstract fun apply(left: Int, right: Int?): Int
+    abstract fun apply(left: Double, right: Double?): Double
+
+    class Equal : Operator("=") {
+        override fun apply(left: Double, right: Double?): Double {
+            return if (left == right) 1.0 else 0.0
+        }
+    }
 
     class Addition : Operator("+") {
-        override fun apply(left: Int, right: Int?): Int {
-            return left + (right ?: 0)
+        override fun apply(left: Double, right: Double?): Double {
+            return left + (right ?: 0.0)
         }
     }
 
     class Subtraction : Operator("-") {
-        override fun apply(left: Int, right: Int?): Int {
-            return left - (right ?: 0)
+        override fun apply(left: Double, right: Double?): Double {
+            return left - (right ?: 0.0)
         }
     }
 
     class Multiplication : Operator("*") {
-        override fun apply(left: Int, right: Int?): Int {
-            return left * (right ?: 1)
+        override fun apply(left: Double, right: Double?): Double {
+            return left * (right ?: 1.0)
         }
     }
 
     class Division : Operator("/") {
-        override fun apply(left: Int, right: Int?): Int {
-            if (right == 0) throw ArithmeticException("Division by zero")
-            return left / (right ?: 1)
+        override fun apply(left: Double, right: Double?): Double {
+            if (right == 0.0) throw ArithmeticException("Division by zero")
+            return left / (right ?: 1.0)
         }
     }
 
     class Negation : Operator("-") {
-        override fun apply(left: Int, right: Int?): Int {
+        override fun apply(left: Double, right: Double?): Double {
             return -left
         }
     }

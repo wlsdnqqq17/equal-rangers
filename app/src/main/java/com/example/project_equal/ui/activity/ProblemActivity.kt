@@ -34,12 +34,13 @@ class ProblemActivity : AppCompatActivity() {
         val minusButton: Button = findViewById(R.id.minus_button)
         val multiplyButton: Button = findViewById(R.id.multiply_button)
         val divideButton: Button = findViewById(R.id.divide_button)
+        val equalButton: Button = findViewById(R.id.equal_button)
 
-        // Set button listeners
         plusButton.setOnClickListener { createDraggableItem(Operator.Addition()) }
         minusButton.setOnClickListener { createDraggableItem(Operator.Subtraction()) }
         multiplyButton.setOnClickListener { createDraggableItem(Operator.Multiplication()) }
         divideButton.setOnClickListener { createDraggableItem(Operator.Division()) }
+        equalButton.setOnClickListener { createDraggableEqual(Operator.Equal())}
 
         val layout = findViewById<RelativeLayout>(R.id.root_layout)
         layout.setOnDragListener(dragListener)
@@ -49,6 +50,41 @@ class ProblemActivity : AppCompatActivity() {
         createDraggableNumber(2)
         createDraggableNumber(3)
         createDraggableNumber(4)
+    }
+
+    private fun createDraggableEqual(operator: Operator) {
+        val draggableItem = TextView(this).apply {
+            text = "[] = []"
+            tag = operator
+            textSize = 20f
+            setPadding(16, 16, 16, 16)
+            setBackgroundResource(android.R.color.holo_red_dark)
+            setOnTouchListener { view, event ->
+                if (event.action == MotionEvent.ACTION_DOWN) {
+                    val clipText = text
+                    val item = ClipData.Item(clipText)
+                    val mimeTypes = arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN)
+                    val dragData = ClipData(clipText, mimeTypes, item)
+                    val dragShadow = View.DragShadowBuilder(view)
+
+                    view.startDragAndDrop(dragData, dragShadow, view, 0)
+                    view.visibility = View.INVISIBLE
+                    true
+                } else {
+                    false
+                }
+            }
+        }
+        val layout = findViewById<RelativeLayout>(R.id.root_layout)
+        layout.post {
+            val params = RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT
+            )
+            params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE)
+            layout.addView(draggableItem, params)
+            Log.d(TAG, "Draggable item created: ${draggableItem.text}")
+        }
     }
 
     private fun createDraggableNumber(number: Int) {
@@ -208,9 +244,7 @@ class ProblemActivity : AppCompatActivity() {
     }
 
     private fun isOperator(view: TextView): Boolean {
-        val text = view.text.toString()
-        return text.contains("+") || text.contains("-") ||
-                text.contains("*") || text.contains("/") && text.contains("[]")
+        return view.tag is Operator
     }
 
     private fun updateOperatorView(operatorView: TextView, numberView: TextView) {
