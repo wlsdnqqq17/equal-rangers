@@ -21,85 +21,111 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/equal_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="0dp"
+                android:background="@android:color/transparent"
                 android:src="@drawable/equal" />
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/plus_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="0dp"
+                android:background="@android:color/transparent"
                 android:src="@drawable/plus" />
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/minus_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="0dp"
+                android:background="@android:color/transparent"
                 android:src="@drawable/minus" />
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/multiply_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="0dp"
+                android:background="@android:color/transparent"
                 android:src="@drawable/multiply" />
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/divide_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="0dp"
+                android:background="@android:color/transparent"
                 android:src="@drawable/divide" />
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/negation_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="0dp"
+                android:background="@android:color/transparent"
                 android:src="@drawable/minus" />
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/square_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="0dp"
+                android:background="@android:color/transparent"
                 android:src="@drawable/power2" />
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/sqrt_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="0dp"
+                android:background="@android:color/transparent"
                 android:src="@drawable/root2" />
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/cube_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="0dp"
+                android:background="@android:color/transparent"
                 android:src="@drawable/power3" />
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/cbrt_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="0dp"
+                android:background="@android:color/transparent"
                 android:src="@drawable/root3" />
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/colon_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="0dp"
+                android:background="@android:color/transparent"
                 android:src="@drawable/colon" />
         </LinearLayout>
     </HorizontalScrollView>
 
-    <ImageView
+    <ImageButton
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:padding="16dp"
+        android:padding="0dp"
+        android:scaleType="centerCrop"
+        android:background="@android:color/transparent"
         android:layout_above="@id/horizontal_scroll_view"
         android:src="@drawable/delete" />
 
-    <ImageView
+    <ImageButton
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:padding="16dp"
+        android:padding="0dp"
+        android:scaleType="centerCrop"
+        android:background="@android:color/transparent"
         android:layout_above="@id/horizontal_scroll_view"
         android:layout_alignParentRight="true"
         android:src="@drawable/disas" />
