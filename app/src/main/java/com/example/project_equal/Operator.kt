@@ -1,6 +1,9 @@
 package com.example.project_equal
 
- abstract class Operator(val symbol: String) {
+import kotlin.math.cbrt
+import kotlin.math.sqrt
+
+abstract class Operator(val symbol: String) {
     var leftExpression: Expression? = null
     var rightExpression: Expression? = null
 
@@ -37,9 +40,33 @@ package com.example.project_equal
         }
     }
 
-    class Negation : Operator("-") {
+    class Negation : Operator("--") {
         override fun apply(left: Double, right: Double?): Double {
             return -left
+        }
+    }
+
+     class Sqrt : Operator("sqrt") {
+         override fun apply(left: Double, right: Double?): Double {
+             return sqrt(left)
+         }
+     }
+
+    class Square : Operator("^") {
+        override fun apply(left: Double, right: Double?): Double {
+            return left * left
+        }
+    }
+
+    class Cube : Operator("^^") {
+        override fun apply(left: Double, right: Double?): Double {
+            return left * left * left
+        }
+    }
+
+    class Cbrt : Operator("cbrt") {
+        override fun apply(left: Double, right: Double?): Double {
+            return cbrt(left)
         }
     }
 }
@@ -51,6 +78,11 @@ fun getOperator(symbol: String): Operator? {
         "-" -> Operator.Subtraction()
         "*" -> Operator.Multiplication()
         "/" -> Operator.Division()
+        "--" -> Operator.Negation()
+        "^" -> Operator.Square()
+        "sqrt" -> Operator.Sqrt()
+        "^^" -> Operator.Cube()
+        "cbrt" -> Operator.Cbrt()
         else -> null
     }
 }
