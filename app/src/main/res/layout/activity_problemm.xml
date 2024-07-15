@@ -2,28 +2,18 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.activity.ProblemActivity">
 
 
-<FrameLayout
-android:layout_width="match_parent"
-android:layout_height="match_parent">
-
-<LinearLayout
-    android:id="@+id/bottom_sheet"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="#E0E0E0"
-    android:padding="16dp"
-    android:layout_gravity="bottom"
-    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
     <HorizontalScrollView
+        android:id="@+id/horizontal_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:scrollbars="none">
 
         <LinearLayout
@@ -62,13 +52,19 @@ android:layout_height="match_parent">
                 android:src="@drawable/divide" />
 
             <ImageView
+                android:id="@+id/negation_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/minus" />
+
+            <ImageView
                 android:id="@+id/square_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/power2" />
 
             <ImageView
-                android:id="@+id/root2_button"
+                android:id="@+id/sqrt_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/root2" />
@@ -90,11 +86,41 @@ android:layout_height="match_parent">
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/colon" />
-
-
-
         </LinearLayout>
     </HorizontalScrollView>
-</LinearLayout>
-</FrameLayout>
-    </RelativeLayout>
+
+    <ImageView
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:padding="16dp"
+        android:layout_above="@id/horizontal_scroll_view"
+        android:src="@drawable/delete" />
+
+    <ImageView
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:padding="16dp"
+        android:layout_above="@id/horizontal_scroll_view"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/disas" />
+
+    <TextView
+        android:id="@+id/problem_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="Problem"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/result_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/problem_text"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:text="Result"
+        android:textSize="24sp" />
+
+</RelativeLayout>
