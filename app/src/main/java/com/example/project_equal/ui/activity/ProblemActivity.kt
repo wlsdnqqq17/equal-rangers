@@ -47,7 +47,6 @@ class ProblemActivity : AppCompatActivity() {
         val cubeButton: Button = findViewById(R.id.cube_button)
         val cbrtButton: Button = findViewById(R.id.cbrt_button)
 
-        val next_btn: Button = findViewById(R.id.next_button)
 
 
         plusButton.setOnClickListener { createDraggableItem(Operator.Addition()) }
@@ -73,11 +72,7 @@ class ProblemActivity : AppCompatActivity() {
                 createDraggableNumber(char - '0')
             }
         }
-        next_btn.setOnClickListener(){
-            val intent = Intent(this, GameResult::class.java)
-            intent.putExtra("PROBLEM_RESULT", 10)
-            startActivity(intent)
-        }
+
     }
 
     private fun createDraggableExpr(expr: Expression) {

@@ -90,7 +90,7 @@ class GameResult : AppCompatActivity() {
                         Toast.makeText(this@GameResult, "Rank updated successfully", Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    if(response.code() == 403){
+                    if(response.code() == 403 || response.code() == 401){
                         Log.d("PlayerManager", "Access token expired. Refreshing token...")
                         val newAccessToken = playerManager.refreshAccessToken()
                         // Retry with the new access token
