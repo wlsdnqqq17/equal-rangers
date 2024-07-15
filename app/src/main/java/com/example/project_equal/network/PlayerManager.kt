@@ -51,12 +51,17 @@ class PlayerManager(private val apiService: ApiService, private val context: Con
                 }
 
                 val json = JSONObject(responseBody.string())
+                val itemJsonArray = json.getJSONArray("item")
+                val itemList = mutableListOf<Int>()
+                for (i in 0 until itemJsonArray.length()) {
+                    itemList.add(itemJsonArray.getInt(i))
+                }
                 PlayerData(
                     userId = json.getString("user_id"),
                     nickname = json.getString("nickname"),
                     email = json.getString("email"),
                     gold = json.getInt("gold"),
-                    item = listOf(0),
+                    item = itemList,
                     highscore = json.getInt("highscore")
                 )
             } catch (e: IOException) {

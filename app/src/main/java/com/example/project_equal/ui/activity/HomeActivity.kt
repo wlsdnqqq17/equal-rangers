@@ -48,7 +48,7 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var highscoreTextView: TextView
     private lateinit var btnShowRanking: Button
     private lateinit var random: Random
-
+    private lateinit var items : MutableList<Int>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,13 +107,12 @@ class HomeActivity : AppCompatActivity() {
         } ?: run {
             Toast.makeText(this@HomeActivity, "User ID not found.", Toast.LENGTH_SHORT).show()
         }
-
-        val characterContainer = findViewById<RelativeLayout>(R.id.characterContainer)
-        val characterCount = 10 // 원하는 캐릭터 수로 변경
-        val characters = intArrayOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
-        for (i in 0 until characterCount) {
-            addCharacter(characterContainer, i, characters[i])
-        }
+//
+//        val characterContainer = findViewById<RelativeLayout>(R.id.characterContainer)
+////        val characters = items
+//        for (i in 0 until items.size) {
+//            addCharacter(characterContainer, i, items[i])
+//        }
     }
 
     private fun showRankingDialog() {
@@ -199,10 +198,22 @@ class HomeActivity : AppCompatActivity() {
             userIdTextView.text = playerData.nickname
             goldTextView.text = playerData.gold.toString()
             highscoreTextView.text = playerData.highscore.toString()
+            Log.d("PLAYERDATA", "${playerData.item}")
+            items = playerData.item.toMutableList()
+            setAnimation(items)
             Log.d(
                 "updateUI",
                 "username: ${playerData.userId}, nickname: ${playerData.nickname}, email: ${playerData.email}"
             )
+        }
+    }
+
+    private suspend fun setAnimation(items: MutableList<Int>){
+        val characterContainer = findViewById<RelativeLayout>(R.id.characterContainer)
+//        val characters = items
+        Log.d("test", "$items")
+        for (i in 0 until items.size) {
+            addCharacter(characterContainer, i, items[i])
         }
     }
 
