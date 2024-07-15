@@ -24,6 +24,8 @@ class ProblemActivity : AppCompatActivity() {
     private lateinit var deleteButton: Button
     private lateinit var disasamButton: Button
     private lateinit var resultTextView: TextView
+    private lateinit var problemNumber: String
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,12 +35,12 @@ class ProblemActivity : AppCompatActivity() {
         deleteButton = findViewById(R.id.delete_button)
         disasamButton = findViewById(R.id.disassemble_button)
 
-        // Initialize buttons
         val plusButton: Button = findViewById(R.id.plus_button)
         val minusButton: Button = findViewById(R.id.minus_button)
         val multiplyButton: Button = findViewById(R.id.multiply_button)
         val divideButton: Button = findViewById(R.id.divide_button)
         val equalButton: Button = findViewById(R.id.equal_button)
+        val next_btn: Button = findViewById(R.id.next_button)
 
         plusButton.setOnClickListener { createDraggableItem(Operator.Addition()) }
         minusButton.setOnClickListener { createDraggableItem(Operator.Subtraction()) }
@@ -48,12 +50,18 @@ class ProblemActivity : AppCompatActivity() {
 
         val layout = findViewById<RelativeLayout>(R.id.root_layout)
         layout.setOnDragListener(dragListener)
+        problemNumber = intent.getStringExtra("PROBLEM_NUMBER")!!
 
-        // Create draggable numbers
-        createDraggableNumber(1)
-        createDraggableNumber(2)
-        createDraggableNumber(3)
-        createDraggableNumber(4)
+        problemNumber?.forEach { char ->
+            if (char.isDigit()) {
+                createDraggableNumber(char - '0')
+            }
+        }
+        next_btn.setOnClickListener(){
+            val intent = Intent(this, GameResult::class.java)
+            intent.putExtra("PROBLEM_RESULT", 10)
+            startActivity(intent)
+        }
     }
 
     private fun createDraggableExpr(expr: Expression) {
@@ -349,8 +357,9 @@ class ProblemActivity : AppCompatActivity() {
             val symbols = listOf('+', '-', '*', '/', '=', ' ')
             val filteredText = newExpression.string.filter { it !in symbols }
             Log.d(TAG, "Filtered text: $filteredText")
-            val isContained = "1234".contains(filteredText)
-            if (!isContained) {
+            val isContained = problemNumber!!.contains(filteredText)
+
+            if (operator.symbol == "/" && operator.rightExpression!!.value == 0.0) {
                 createDraggableExpr(operator.leftExpression!!)
                 createDraggableExpr(operator.rightExpression!!)
                 operator.leftExpression = null
@@ -360,12 +369,22 @@ class ProblemActivity : AppCompatActivity() {
                 val layout = operatorView.parent as ViewGroup
                 layout.removeView(operatorView)
             }
-            if (newExpression.value == 1.0 && newExpression.operator.symbol == "=") {
-                val intent = Intent(this, GameActivity::class.java)
+            else if (!isContained) {
+                createDraggableExpr(operator.leftExpression!!)
+                createDraggableExpr(operator.rightExpression!!)
+                operator.leftExpression = null
+                operator.rightExpression = null
+                operatorView.text = "[] " + operator.symbol + " []"
+                createDraggableItem(operator)
+                val layout = operatorView.parent as ViewGroup
+                layout.removeView(operatorView)
+            }
+            else if (newExpression.value == 1.0 && newExpression.operator.symbol == "=") {
+                val intent = Intent(this, ThreeChoiceActivity::class.java)
                 startActivity(intent)
                 finish()
             }
-            if (isContained) {
+            else if (isContained) {
                 operatorView.tag = newExpression
                 resultTextView.text = "${newExpression.value} (${newExpression.string})"
                 Log.d(TAG, "Updated operator view: $updatedText")

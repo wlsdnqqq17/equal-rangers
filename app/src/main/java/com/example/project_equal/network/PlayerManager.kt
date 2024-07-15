@@ -7,8 +7,12 @@ import com.example.project_equal.network.RefreshTokenRequest
 import com.example.project_equal.network.RefreshTokenResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONException
 import org.json.JSONObject
 import retrofit2.Response
@@ -63,7 +67,7 @@ class PlayerManager(private val apiService: ApiService, private val context: Con
         }
     }
 
-    private suspend fun refreshAccessToken(): String {
+    suspend fun refreshAccessToken(): String {
         return withContext(Dispatchers.IO) {
             val sharedPreferences = context.getSharedPreferences("login_prefs", Context.MODE_PRIVATE)
             val tokensJson = sharedPreferences.getString("user_token", null) ?: throw IOException("Tokens not found")
@@ -93,17 +97,88 @@ class PlayerManager(private val apiService: ApiService, private val context: Con
         }
     }
 
+//    suspend fun updatePlayerInfo(userId: String, playerData: PlayerData, accessToken: String): PlayerData {
+//        return withContext(Dispatchers.IO) {
+//            try {
+//                val response = apiService.updatePlayerInfo(userId, playerData).execute()
+//                if (response.isSuccessful) {
+//                    response.body() ?: throw IOException("Failed to update player information: empty response body")
+//                } else {
+//                    throw IOException("Failed to update player information: ${response.code()}")
+//                }
+//            } catch (e: IOException) {
+//                throw IOException("Failed to update player information: ${e.message}", e)
+//            }
+//        }
+//    }
+
+    suspend fun getAccessToken(sharedPreferences: SharedPreferences): String {
+        return withContext(Dispatchers.IO) {
+            try {
+                val tokensJsonString = sharedPreferences.getString("user_token", null)
+                val tokensJson = JSONObject(tokensJsonString ?: throw IOException("User token not found or is null"))
+
+                tokensJson.getString("access")
+            } catch (e: IOException) {
+                throw IOException("Failed to read tokens.json")
+            }
+        }
+    }
+
     suspend fun updatePlayerInfo(userId: String, playerData: PlayerData, accessToken: String): PlayerData {
         return withContext(Dispatchers.IO) {
             try {
-                val response = apiService.updatePlayerInfo(userId, playerData).execute()
-                if (response.isSuccessful) {
-                    response.body() ?: throw IOException("Failed to update player information: empty response body")
-                } else {
-                    throw IOException("Failed to update player information: ${response.code()}")
+                val url = "$base_url/api/players/$userId/update/"
+                val json = JSONObject()
+                json.put("nickname", playerData.nickname)
+                json.put("email", playerData.email)
+                json.put("gold", playerData.gold)
+                json.put("highscore", playerData.highscore)
+                // Add other fields as needed
+
+                val mediaType = "application/json; charset=utf-8".toMediaType()
+                val body = json.toString().toRequestBody(mediaType)
+
+                val request = Request.Builder()
+                    .url(url)
+                    .header("Authorization", "Bearer $accessToken")
+                    .put(body)
+                    .build()
+
+                val response = OkHttpClient().newCall(request).execute()
+//                if (!response.isSuccessful) {
+//                    throw IOException("Failed to update player information: ${response.code}")
+//                }
+                if (!response.isSuccessful) {
+                    if (response.code == 401) {
+                        // 액세스 토큰이 만료된 경우 토큰 갱신 시도
+                        Log.d("PlayerManager", "Access token expired. Refreshing token...")
+                        val newAccessToken = refreshAccessToken()
+                        // Retry with the new access token
+                        return@withContext updatePlayerInfo(userId, playerData, newAccessToken)
+                    } else {
+                        throw IOException("Unexpected code $response")
+                    }
                 }
+
+                val responseBody = response.body
+                if (responseBody == null) {
+                    throw IOException("Empty response body")
+                }
+
+                val jsonResponse = JSONObject(responseBody.string())
+                PlayerData(
+                    userId = jsonResponse.getString("user_id"),
+                    nickname = jsonResponse.getString("nickname"),
+                    email = jsonResponse.getString("email"),
+                    gold = jsonResponse.getInt("gold"),
+                    item = listOf(0),
+                    highscore = jsonResponse.getInt("highscore")
+                )
             } catch (e: IOException) {
                 throw IOException("Failed to update player information: ${e.message}", e)
+            } catch (e: JSONException) {
+                throw IOException("Failed to parse JSON response", e)
             }
         }
     }
@@ -112,6 +187,7 @@ class PlayerManager(private val apiService: ApiService, private val context: Con
         return withContext(Dispatchers.IO) {
             try {
                 val currentPlayer = getPlayerInfo(userId, accessToken)
+
                 val updatedData = currentPlayer.copy(
                     userId = partialData["userId"] as String? ?: currentPlayer.userId,
                     nickname = partialData["nickname"] as String? ?: currentPlayer.nickname,
@@ -131,4 +207,7 @@ class PlayerManager(private val apiService: ApiService, private val context: Con
             }
         }
     }
+
+
+
 }

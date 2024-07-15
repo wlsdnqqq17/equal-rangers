@@ -51,4 +51,5 @@ dependencies {
     implementation(libs.converter.gson)
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
     implementation("androidx.fragment:fragment-ktx:1.3.6")
+    implementation ("com.google.android.material:material:1.4.0")
 }

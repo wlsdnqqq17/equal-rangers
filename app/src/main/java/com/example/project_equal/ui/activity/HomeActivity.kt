@@ -9,10 +9,15 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.project_equal.R
 import com.example.project_equal.network.ApiService
 import com.example.project_equal.network.LogoutRequest
 import com.example.project_equal.network.PlayerData
+import com.example.project_equal.network.RankData
+import com.example.project_equal.network.RankingAdapter
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.*
 import okhttp3.OkHttpClient
 import org.json.JSONObject
@@ -31,6 +36,7 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var userIdTextView: TextView
     private lateinit var goldTextView: TextView
     private lateinit var highscoreTextView: TextView
+    private lateinit var btnShowRanking: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,8 +66,13 @@ class HomeActivity : AppCompatActivity() {
         }
         val startGameButton = findViewById<Button>(R.id.btn_start_game)
         startGameButton.setOnClickListener {
-            val intent = Intent(this, GameActivity::class.java)
+            val intent = Intent(this, ThreeChoiceActivity::class.java)
             startActivity(intent)
+        }
+
+        btnShowRanking = findViewById(R.id.btn_show_ranking)
+        btnShowRanking.setOnClickListener {
+            showRankingDialog()
         }
 
         user_id?.let {
@@ -82,6 +93,49 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
+    private fun showRankingDialog() {
+        val dialog = BottomSheetDialog(this)
+        val dialogView = layoutInflater.inflate(R.layout.ranking_bottom_sheet, null)
+        dialog.setContentView(dialogView)
+
+        val rankingList = dialogView.findViewById<RecyclerView>(R.id.ranking_list)
+        rankingList.layoutManager = LinearLayoutManager(this)
+
+        dialog.show()
+
+        CoroutineScope(Dispatchers.Main).launch {
+            try {
+                val rankings = fetchRankings()
+                rankingList.adapter = RankingAdapter(rankings)
+            } catch (e: Exception) {
+                // Handle error
+                Log.e("HomeActivity", "Failed to fetch rankings: ${e.message}")
+                Toast.makeText(this@HomeActivity, "Failed to fetch rankings", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private suspend fun fetchRankings(): List<RankData> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val retrofit = Retrofit.Builder()
+                    .baseUrl("http://52.78.68.85:8000")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build()
+                val apiService = retrofit.create(ApiService::class.java)
+                val response = apiService.getRankings().execute()
+                if (response.isSuccessful) {
+                    response.body() ?: emptyList()
+                } else {
+                    // Handle error here
+                    emptyList()
+                }
+            } catch (e: Exception) {
+                // Handle error here
+                emptyList()
+            }
+        }
+    }
     private suspend fun getAccessToken(): String {
         return withContext(Dispatchers.IO) {
             try {

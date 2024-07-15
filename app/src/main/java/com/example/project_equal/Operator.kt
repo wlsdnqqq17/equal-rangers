@@ -32,7 +32,7 @@ package com.example.project_equal
 
     class Division : Operator("/") {
         override fun apply(left: Double, right: Double?): Double {
-            if (right == 0.0) throw ArithmeticException("Division by zero")
+            if (right == 0.0) return 0.0
             return left / (right ?: 1.0)
         }
     }

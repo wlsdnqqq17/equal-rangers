@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -16,6 +16,12 @@
         android:theme="@style/Theme.Project_Equal"
         tools:targetApi="31">
         <activity
+            android:name=".ui.activity.GameResult"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activity.ThreeChoiceActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.activity.MainActivity"
             android:exported="true">
             <intent-filter>
@@ -24,11 +30,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.LoginActivity"/>
-        <activity android:name=".ui.activity.HomeActivity"/>
-        <activity android:name=".ui.activity.SignUpActivity"/>
-        <activity android:name=".ui.activity.GameActivity"/>
-        <activity android:name=".ui.activity.ProblemActivity"/>
+        <activity android:name=".ui.activity.LoginActivity" />
+        <activity android:name=".ui.activity.HomeActivity" />
+        <activity android:name=".ui.activity.SignUpActivity" />
+        <activity android:name=".ui.activity.ProblemActivity" />
     </application>
 
 </manifest>
