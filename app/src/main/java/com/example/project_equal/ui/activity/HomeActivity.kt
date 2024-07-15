@@ -4,7 +4,6 @@ import PlayerManager
 import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -203,7 +202,7 @@ class HomeActivity : AppCompatActivity() {
             setAnimation(items)
             Log.d(
                 "updateUI",
-                "username: ${playerData.userId}, nickname: ${playerData.nickname}, email: ${playerData.email}"
+                "username: ${playerData.userId}, nickname: ${playerData.nickname}"
             )
         }
     }

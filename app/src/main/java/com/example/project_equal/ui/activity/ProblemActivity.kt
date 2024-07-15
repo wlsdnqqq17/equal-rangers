@@ -9,7 +9,7 @@ import android.view.DragEvent
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.ImageButton
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -21,8 +21,8 @@ import com.example.project_equal.getOperator
 class ProblemActivity : AppCompatActivity() {
 
     private val TAG = "ProblemActivity"
-    private lateinit var deleteButton: Button
-    private lateinit var disasamButton: Button
+    private lateinit var deleteButton: ImageButton
+    private lateinit var disasamButton: ImageButton
     private lateinit var resultTextView: TextView
     private lateinit var problemNumber: String
     private var score: Int = 5
@@ -30,22 +30,22 @@ class ProblemActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_problem)
+        setContentView(R.layout.activity_problemm)
 
         resultTextView = findViewById(R.id.result_text)
         deleteButton = findViewById(R.id.delete_button)
         disasamButton = findViewById(R.id.disassemble_button)
         val problemText: TextView = findViewById(R.id.problem_text)
-        val plusButton: Button = findViewById(R.id.plus_button)
-        val minusButton: Button = findViewById(R.id.minus_button)
-        val multiplyButton: Button = findViewById(R.id.multiply_button)
-        val divideButton: Button = findViewById(R.id.divide_button)
-        val equalButton: Button = findViewById(R.id.equal_button)
-        val negationButton: Button = findViewById(R.id.negation_button)
-        val sqrtButton: Button = findViewById(R.id.sqrt_button)
-        val squareButton: Button = findViewById(R.id.square_button)
-        val cubeButton: Button = findViewById(R.id.cube_button)
-        val cbrtButton: Button = findViewById(R.id.cbrt_button)
+        val plusButton: ImageButton = findViewById(R.id.plus_button)
+        val minusButton: ImageButton = findViewById(R.id.minus_button)
+        val multiplyButton: ImageButton = findViewById(R.id.multiply_button)
+        val divideButton: ImageButton = findViewById(R.id.divide_button)
+        val equalButton: ImageButton = findViewById(R.id.equal_button)
+        val negationButton: ImageButton = findViewById(R.id.negation_button)
+        val sqrtButton: ImageButton = findViewById(R.id.sqrt_button)
+        val squareButton: ImageButton = findViewById(R.id.square_button)
+        val cubeButton: ImageButton = findViewById(R.id.cube_button)
+        val cbrtButton: ImageButton = findViewById(R.id.cbrt_button)
 
 
 

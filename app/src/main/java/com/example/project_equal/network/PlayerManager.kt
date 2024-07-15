@@ -59,7 +59,6 @@ class PlayerManager(private val apiService: ApiService, private val context: Con
                 PlayerData(
                     userId = json.getString("user_id"),
                     nickname = json.getString("nickname"),
-                    email = json.getString("email"),
                     gold = json.getInt("gold"),
                     item = itemList,
                     highscore = json.getInt("highscore")
@@ -136,7 +135,6 @@ class PlayerManager(private val apiService: ApiService, private val context: Con
                 val url = "$base_url/api/players/$userId/update/"
                 val json = JSONObject()
                 json.put("nickname", playerData.nickname)
-                json.put("email", playerData.email)
                 json.put("gold", playerData.gold)
                 json.put("highscore", playerData.highscore)
                 // Add other fields as needed
@@ -175,7 +173,6 @@ class PlayerManager(private val apiService: ApiService, private val context: Con
                 PlayerData(
                     userId = jsonResponse.getString("user_id"),
                     nickname = jsonResponse.getString("nickname"),
-                    email = jsonResponse.getString("email"),
                     gold = jsonResponse.getInt("gold"),
                     item = listOf(0),
                     highscore = jsonResponse.getInt("highscore")
@@ -196,7 +193,6 @@ class PlayerManager(private val apiService: ApiService, private val context: Con
                 val updatedData = currentPlayer.copy(
                     userId = partialData["userId"] as String? ?: currentPlayer.userId,
                     nickname = partialData["nickname"] as String? ?: currentPlayer.nickname,
-                    email = partialData["email"] as String? ?: currentPlayer.email,
                     gold = partialData["gold"] as Int? ?: currentPlayer.gold,
                     highscore = partialData["highscore"] as Int? ?: currentPlayer.highscore
                     // Handle other fields similarly

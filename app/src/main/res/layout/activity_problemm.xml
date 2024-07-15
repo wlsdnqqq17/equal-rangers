@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root_layout"
     android:layout_width="match_parent"
@@ -27,6 +26,7 @@
                 android:layout_height="wrap_content"
                 android:padding="0dp"
                 android:background="@android:color/transparent"
+                android:contentDescription="@string/equal"
                 android:src="@drawable/equal" />
 
             <ImageButton
@@ -35,6 +35,7 @@
                 android:layout_height="wrap_content"
                 android:padding="0dp"
                 android:background="@android:color/transparent"
+                android:contentDescription="@string/plus"
                 android:src="@drawable/plus" />
 
             <ImageButton
@@ -43,6 +44,7 @@
                 android:layout_height="wrap_content"
                 android:padding="0dp"
                 android:background="@android:color/transparent"
+                android:contentDescription="@string/minus"
                 android:src="@drawable/minus" />
 
             <ImageButton
@@ -51,6 +53,7 @@
                 android:layout_height="wrap_content"
                 android:padding="0dp"
                 android:background="@android:color/transparent"
+                android:contentDescription="@string/multiply"
                 android:src="@drawable/multiply" />
 
             <ImageButton
@@ -59,6 +62,7 @@
                 android:layout_height="wrap_content"
                 android:padding="0dp"
                 android:background="@android:color/transparent"
+                android:contentDescription="@string/divide"
                 android:src="@drawable/divide" />
 
             <ImageButton
@@ -67,6 +71,7 @@
                 android:layout_height="wrap_content"
                 android:padding="0dp"
                 android:background="@android:color/transparent"
+                android:contentDescription="@string/negation"
                 android:src="@drawable/minus" />
 
             <ImageButton
@@ -75,6 +80,7 @@
                 android:layout_height="wrap_content"
                 android:padding="0dp"
                 android:background="@android:color/transparent"
+                android:contentDescription="@string/square"
                 android:src="@drawable/power2" />
 
             <ImageButton
@@ -83,6 +89,7 @@
                 android:layout_height="wrap_content"
                 android:padding="0dp"
                 android:background="@android:color/transparent"
+                android:contentDescription="@string/sqrt"
                 android:src="@drawable/root2" />
 
             <ImageButton
@@ -91,6 +98,7 @@
                 android:layout_height="wrap_content"
                 android:padding="0dp"
                 android:background="@android:color/transparent"
+                android:contentDescription="@string/cube"
                 android:src="@drawable/power3" />
 
             <ImageButton
@@ -99,6 +107,7 @@
                 android:layout_height="wrap_content"
                 android:padding="0dp"
                 android:background="@android:color/transparent"
+                android:contentDescription="@string/cbrt"
                 android:src="@drawable/root3" />
 
             <ImageButton
@@ -106,21 +115,25 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="0dp"
+                android:contentDescription="@string/colon"
                 android:background="@android:color/transparent"
                 android:src="@drawable/colon" />
         </LinearLayout>
     </HorizontalScrollView>
 
     <ImageButton
+        android:id="@+id/delete_button"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:padding="0dp"
         android:scaleType="centerCrop"
         android:background="@android:color/transparent"
         android:layout_above="@id/horizontal_scroll_view"
+        android:contentDescription="@string/delete"
         android:src="@drawable/delete" />
 
     <ImageButton
+        android:id="@id/disassemble_button"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:padding="0dp"
@@ -128,6 +141,7 @@
         android:background="@android:color/transparent"
         android:layout_above="@id/horizontal_scroll_view"
         android:layout_alignParentRight="true"
+        android:contentDescription="@string/disassemble"
         android:src="@drawable/disas" />
 
     <TextView
@@ -136,7 +150,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
-        android:text="Problem"
+        android:text="@string/problem"
         android:textSize="24sp" />
 
     <TextView
@@ -146,7 +160,7 @@
         android:layout_below="@id/problem_text"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="32dp"
-        android:text="Result"
+        android:text="@string/result"
         android:textSize="24sp" />
 
 </RelativeLayout>

@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">Project_Equal</string>
+    <string name="cbrt">cbrt</string>
+    <string name="cube">cube</string>
+    <string name="sqrt">sqrt</string>
+    <string name="square">square</string>
+    <string name="negation">negation</string>
+    <string name="divide">divide</string>
+    <string name="multiply">multiply</string>
+    <string name="minus">minus</string>
+    <string name="plus">plus</string>
+    <string name="equal">equal</string>
+    <string name="colon">colon</string>
+    <string name="delete">Delete</string>
+    <string name="disassemble">Disassemble</string>
+    <string name="problem">Problem</string>
+    <string name="result">Result</string>
 </resources>
