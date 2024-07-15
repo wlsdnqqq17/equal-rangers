@@ -52,6 +52,51 @@
         android:text="/" />
 
     <Button
+        android:id="@+id/negation_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/divide_button"
+        android:layout_alignTop="@id/multiply_button"
+        android:layout_marginStart="16dp"
+        android:text="negate" />
+
+    <Button
+        android:id="@+id/sqrt_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/multiply_button"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="sqrt" />
+
+    <Button
+        android:id="@+id/square_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/divide_button"
+        android:layout_alignTop="@id/sqrt_button"
+        android:layout_marginStart="16dp"
+        android:text="^2" />
+
+    <Button
+        android:id="@+id/cbrt_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/plus_button"
+        android:layout_alignTop="@id/sqrt_button"
+        android:layout_marginStart="16dp"
+        android:text="cbrt" />
+
+    <Button
+        android:id="@+id/cube_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/sqrt_button"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="cube" />
+
+    <Button
         android:id="@+id/equal_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -64,7 +109,7 @@
         android:id="@+id/delete_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/multiply_button"
+        android:layout_below="@id/sqrt_button"
         android:layout_marginTop="16dp"
         android:layout_centerHorizontal="true"
         android:text="Delete" />

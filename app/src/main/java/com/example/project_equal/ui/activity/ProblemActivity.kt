@@ -35,12 +35,18 @@ class ProblemActivity : AppCompatActivity() {
         resultTextView = findViewById(R.id.result_text)
         deleteButton = findViewById(R.id.delete_button)
         disasamButton = findViewById(R.id.disassemble_button)
-
+        val problemText: TextView = findViewById(R.id.problem_text)
         val plusButton: Button = findViewById(R.id.plus_button)
         val minusButton: Button = findViewById(R.id.minus_button)
         val multiplyButton: Button = findViewById(R.id.multiply_button)
         val divideButton: Button = findViewById(R.id.divide_button)
         val equalButton: Button = findViewById(R.id.equal_button)
+        val negationButton: Button = findViewById(R.id.negation_button)
+        val sqrtButton: Button = findViewById(R.id.sqrt_button)
+        val squareButton: Button = findViewById(R.id.square_button)
+        val cubeButton: Button = findViewById(R.id.cube_button)
+        val cbrtButton: Button = findViewById(R.id.cbrt_button)
+
         val next_btn: Button = findViewById(R.id.next_button)
 
 
@@ -48,11 +54,19 @@ class ProblemActivity : AppCompatActivity() {
         minusButton.setOnClickListener { createDraggableItem(Operator.Subtraction()) }
         multiplyButton.setOnClickListener { createDraggableItem(Operator.Multiplication()) }
         divideButton.setOnClickListener { createDraggableItem(Operator.Division()) }
+        negationButton.setOnClickListener { createDraggableItem(Operator.Negation()) }
+        sqrtButton.setOnClickListener { createDraggableItem(Operator.Sqrt()) }
+        squareButton.setOnClickListener { createDraggableItem(Operator.Square()) }
+        cubeButton.setOnClickListener { createDraggableItem(Operator.Cube()) }
+        cbrtButton.setOnClickListener { createDraggableItem(Operator.Cbrt()) }
+
+
         equalButton.setOnClickListener { createDraggableEqual(Operator.Equal())}
 
         val layout = findViewById<RelativeLayout>(R.id.root_layout)
         layout.setOnDragListener(dragListener)
         problemNumber = intent.getStringExtra("PROBLEM_NUMBER")!!
+        problemText.text = problemNumber
 
         problemNumber?.forEach { char ->
             if (char.isDigit()) {
@@ -180,6 +194,11 @@ class ProblemActivity : AppCompatActivity() {
                 is Operator.Subtraction -> "[] - []"
                 is Operator.Multiplication -> "[] * []"
                 is Operator.Division -> "[] / []"
+                is Operator.Negation -> "-[]"
+                is Operator.Sqrt -> "sqrt[]"
+                is Operator.Square -> "[]^"
+                is Operator.Cube -> "[]^^"
+                is Operator.Cbrt -> "cbrt[]"
                 else -> "[]"
             }
             tag = operator // 각 드래거블이 독립적인 Operator 객체를 가짐
@@ -215,10 +234,16 @@ class ProblemActivity : AppCompatActivity() {
         }
     }
 
+
     private fun addScoreForOperator(operator: String) {
         when (operator) {
             "+", "-" -> score += 1
             "*", "/" -> score += 2
+            "--" -> score += 1
+            "sqrt" -> score += 3
+            "^" -> score += 3
+            "^^" -> score += 3
+            "cbrt" -> score += 3
         }
         Log.d(TAG, "Score updated: $score")
     }
@@ -227,6 +252,11 @@ class ProblemActivity : AppCompatActivity() {
         when (operator) {
             "+", "-" -> score -= 1
             "*", "/" -> score -= 2
+            "--" -> score -= 1
+            "sqrt" -> score -= 3
+            "^" -> score -= 3
+            "^^" -> score -= 3
+            "cbrt" -> score -= 3
         }
         Log.d(TAG, "Score updated: $score")
     }
@@ -371,11 +401,20 @@ class ProblemActivity : AppCompatActivity() {
 
         operatorView.text = updatedText
         numberView.visibility = View.GONE
-
-        if (operator.leftExpression != null && operator.rightExpression != null) {
+        if (operator is Operator.Negation || operator is Operator.Sqrt || operator is Operator.Square || operator is Operator.Cube || operator is Operator.Cbrt) {
+            val newExpression = Expression.UnaryExpression(operator, operator.leftExpression!!)
+            addScoreForOperator(operator.symbol)
+            operatorView.tag = newExpression
+            resultTextView.text = "${score}"
+            Log.d(TAG, "Updated operator view: $updatedText")
+            Log.d(TAG, "Expression created: ${newExpression.value} (${newExpression.string})")
+            operator.leftExpression = null
+            operator.rightExpression = null
+        }
+        else if (operator.leftExpression != null && operator.rightExpression != null ) {
             val newExpression = Expression.BinaryExpression(operator.leftExpression!!, operator, operator.rightExpression!!)
 
-            val symbols = listOf('+', '-', '*', '/', '=', ' ')
+            val symbols = listOf('+', '-', '*', '/', '=', ' ', 's', 'q', 'r', 't', 'c', 'b', '^')
             val filteredText = newExpression.string.filter { it !in symbols }
             Log.d(TAG, "Filtered text: $filteredText")
             val isContained = problemNumber!!.contains(filteredText)
@@ -397,6 +436,7 @@ class ProblemActivity : AppCompatActivity() {
                 operator.leftExpression = null
                 operator.rightExpression = null
                 operatorView.text = "[] " + operator.symbol + " []"
+                Log.d(TAG, "여기는 !isContained ${operator.symbol}")
                 createDraggableItem(operator)
                 val layout = operatorView.parent as ViewGroup
                 layout.removeView(operatorView)
@@ -413,6 +453,7 @@ class ProblemActivity : AppCompatActivity() {
                 addScoreForOperator(operator.symbol)
                 operatorView.tag = newExpression
                 resultTextView.text = "${score}"
+                resultTextView.text = "${newExpression.value}, (${newExpression.string})"
                 Log.d(TAG, "Updated operator view: $updatedText")
                 Log.d(TAG, "Expression created: ${newExpression.value} (${newExpression.string})")
                 operator.leftExpression = null
