@@ -380,8 +380,6 @@ class ProblemActivity : AppCompatActivity() {
                 layout.removeView(operatorView)
             }
             else if (newExpression.value == 1.0 && newExpression.operator.symbol == "=") {
-                val intent = Intent(this, ThreeChoiceActivity::class.java)
-                startActivity(intent)
                 finish()
             }
             else if (isContained) {
