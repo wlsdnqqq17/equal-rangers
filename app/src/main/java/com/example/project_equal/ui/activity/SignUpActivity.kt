@@ -38,7 +38,6 @@ class SignUpActivity : AppCompatActivity() {
             val signUpPassword: EditText = findViewById(R.id.signUpPassword)
             val signUpPasswordConfirm: EditText = findViewById(R.id.signUpPasswordConfirm)
             val signUpNickname: EditText = findViewById(R.id.signUpNickname)
-            val signUpEmail: EditText = findViewById(R.id.signUpEmail)
             val signUpLastName: EditText = findViewById(R.id.signUpLastName)
             val signUpFirstName: EditText = findViewById(R.id.signUpFirstName)
 
@@ -46,7 +45,6 @@ class SignUpActivity : AppCompatActivity() {
             val password = signUpPassword.text.toString()
             val passwordConfirm = signUpPasswordConfirm.text.toString()
             val nickname = signUpNickname.text.toString()
-            val email = signUpEmail.text.toString()
             val last_name = signUpLastName.text.toString()
             val first_name = signUpFirstName.text.toString()
 
@@ -55,7 +53,6 @@ class SignUpActivity : AppCompatActivity() {
                 password = password,
                 password_confirm = passwordConfirm,
                 nickname = nickname,
-                email = email,
                 last_name = last_name,
                 first_name = first_name
             )
