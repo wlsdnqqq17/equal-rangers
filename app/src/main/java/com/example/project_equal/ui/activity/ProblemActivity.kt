@@ -2,6 +2,7 @@ package com.example.project_equal.ui.activity
 
 import android.content.ClipData
 import android.content.ClipDescription
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.DragEvent
@@ -50,6 +51,42 @@ class ProblemActivity : AppCompatActivity() {
         createDraggableNumber(2)
         createDraggableNumber(3)
         createDraggableNumber(4)
+    }
+
+    private fun createDraggableExpr(expr: Expression) {
+        val draggableItem = TextView(this).apply {
+            this.text = expr.string
+            this.tag = expr
+            textSize = 20f
+            setPadding(16, 16, 16, 16)
+            setBackgroundResource(android.R.color.holo_blue_light)
+            setOnTouchListener { view, event ->
+                if (event.action == MotionEvent.ACTION_DOWN) {
+                    val clipText = this.text
+                    val item = ClipData.Item(clipText)
+                    val mimeTypes = arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN)
+                    val dragData = ClipData(clipText, mimeTypes, item)
+                    val dragShadow = View.DragShadowBuilder(view)
+
+                    view.startDragAndDrop(dragData, dragShadow, view, 0)
+                    view.visibility = View.INVISIBLE
+                    true
+                } else {
+                    false
+                }
+            }
+        }
+
+        val layout = findViewById<RelativeLayout>(R.id.root_layout)
+        layout.post {
+            val params = RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT
+            )
+            params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE)
+            layout.addView(draggableItem, params)
+            Log.d(TAG, "Draggable string created: ${draggableItem.text}")
+        }
     }
 
     private fun createDraggableEqual(operator: Operator) {
@@ -165,6 +202,8 @@ class ProblemActivity : AppCompatActivity() {
         }
     }
 
+
+
     private val dragListener = View.OnDragListener { v, event ->
         when (event.action) {
             DragEvent.ACTION_DRAG_STARTED -> {
@@ -191,9 +230,10 @@ class ProblemActivity : AppCompatActivity() {
                 val deleteButtonY = deleteButtonLocation[1]
                 val deleteButtonWidth = deleteButton.width
                 val deleteButtonHeight = deleteButton.height
+                val draggedViewTag = draggedView.tag
 
                 if (x >= deleteButtonX && x <= deleteButtonX + deleteButtonWidth &&
-                    y >= deleteButtonY && y <= deleteButtonY + deleteButtonHeight) {
+                    y >= deleteButtonY && y <= deleteButtonY + deleteButtonHeight && draggedViewTag is Operator && draggedViewTag.leftExpression == null) {
                 } else {
                     val layout = v as ViewGroup
                     val overlappingView = findOverlappingView(x, y, draggedView, layout)
@@ -268,13 +308,27 @@ class ProblemActivity : AppCompatActivity() {
         }
 
         operatorView.text = updatedText
-        numberView.visibility = View.GONE // Hide the number view after using it
-        Log.d(TAG, "Left expression: ${operator.leftExpression?.string}")
-        Log.d(TAG, "Right expression: ${operator.rightExpression?.string}")
-        // Check if the operator view is fully populated and update its tag with the new expression
+        numberView.visibility = View.GONE
         if (operator.leftExpression != null && operator.rightExpression != null) {
             val newExpression = Expression.BinaryExpression(operator.leftExpression!!, operator, operator.rightExpression!!)
             operatorView.tag = newExpression
+            val symbols = listOf('+', '-', '*', '/', '=', ' ')
+            val filteredText = newExpression.string.filter { it !in symbols }
+            val isContained = "1234".contains(filteredText)
+            if (!isContained) {
+                createDraggableExpr(operator.leftExpression!!)
+                createDraggableExpr(operator.rightExpression!!)
+                operatorView.visibility = View.GONE
+                operator.leftExpression = null
+                operator.rightExpression = null
+                operatorView.text = "[] " + operator.symbol + " []"
+                createDraggableItem(operator)
+            }
+            if (newExpression.value == 1.0 && newExpression.operator.symbol == "=") {
+                val intent = Intent(this, GameActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
             resultTextView.text = "${newExpression.value} (${newExpression.string})"
             Log.d(TAG, "Updated operator view: $updatedText")
             Log.d(TAG, "Expression created: ${newExpression.value} (${newExpression.string})")
