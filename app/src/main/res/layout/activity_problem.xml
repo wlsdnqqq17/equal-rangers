@@ -1,63 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.activity.ProblemActivity"
-    android:id="@+id/root_layout">
+    tools:context=".ui.activity.ProblemActivity">
 
     <TextView
         android:id="@+id/problem_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Problem"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="16dp"
+        android:text="Problem"
+        android:textSize="24sp" />
 
     <Button
         android:id="@+id/plus_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="plus"
         android:layout_below="@id/problem_text"
-        android:layout_marginTop="20dp"
-        android:layout_centerHorizontal="true"/>
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:text="+" />
 
     <Button
         android:id="@+id/minus_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="minus"
-        android:layout_below="@id/plus_button"
-        android:layout_marginTop="20dp"
-        android:layout_centerHorizontal="true"/>
+        android:layout_toEndOf="@id/plus_button"
+        android:layout_alignTop="@id/plus_button"
+        android:layout_marginStart="16dp"
+        android:text="-" />
 
     <Button
         android:id="@+id/multiply_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="multiply"
-        android:layout_below="@id/minus_button"
-        android:layout_marginTop="20dp"
-        android:layout_centerHorizontal="true"/>
+        android:layout_below="@id/plus_button"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:text="*" />
 
     <Button
         android:id="@+id/divide_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="divide"
-        android:layout_below="@id/multiply_button"
-        android:layout_marginTop="20dp"
-        android:layout_centerHorizontal="true"/>
+        android:layout_toEndOf="@id/multiply_button"
+        android:layout_alignTop="@id/multiply_button"
+        android:layout_marginStart="16dp"
+        android:text="/" />
+
+    <Button
+        android:id="@+id/equal_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/minus_button"
+        android:layout_alignTop="@id/plus_button"
+        android:layout_marginStart="16dp"
+        android:text="=" />
 
     <Button
         android:id="@+id/delete_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Delete"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@id/multiply_button"
+        android:layout_marginTop="16dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp"/>
+        android:text="Delete" />
+
+    <Button
+        android:id="@+id/disassemble_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/delete_button"
+        android:layout_marginTop="16dp"
+        android:layout_centerHorizontal="true"
+        android:text="Disassemble" />
+
+
+    <TextView
+        android:id="@+id/result_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/disassemble_button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:text="Result"
+        android:textSize="24sp" />
 
     <Button
         android:id="@+id/next_button"
@@ -67,4 +97,5 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="70dp"/>
+
 </RelativeLayout>
