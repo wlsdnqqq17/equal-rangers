@@ -25,6 +25,7 @@ class ProblemActivity : AppCompatActivity() {
     private lateinit var disasamButton: Button
     private lateinit var resultTextView: TextView
     private lateinit var problemNumber: String
+    private var score: Int = 5
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,6 +42,7 @@ class ProblemActivity : AppCompatActivity() {
         val divideButton: Button = findViewById(R.id.divide_button)
         val equalButton: Button = findViewById(R.id.equal_button)
         val next_btn: Button = findViewById(R.id.next_button)
+
 
         plusButton.setOnClickListener { createDraggableItem(Operator.Addition()) }
         minusButton.setOnClickListener { createDraggableItem(Operator.Subtraction()) }
@@ -213,7 +215,21 @@ class ProblemActivity : AppCompatActivity() {
         }
     }
 
+    private fun addScoreForOperator(operator: String) {
+        when (operator) {
+            "+", "-" -> score += 1
+            "*", "/" -> score += 2
+        }
+        Log.d(TAG, "Score updated: $score")
+    }
 
+    private fun subtractScoreForOperator(operator: String) {
+        when (operator) {
+            "+", "-" -> score -= 1
+            "*", "/" -> score -= 2
+        }
+        Log.d(TAG, "Score updated: $score")
+    }
 
     private val dragListener = View.OnDragListener { v, event ->
         when (event.action) {
@@ -258,6 +274,7 @@ class ProblemActivity : AppCompatActivity() {
                     draggedViewTag.leftExpression = null
                     createDraggableItem(draggedViewTag)
 
+
                 }
                 else if ( x >= disasamButtonX && x <= disasamButtonX + disasamButtonWidth &&
                     y >= disasamButtonY && y <= disasamButtonY + disasamButtonHeight && draggedViewTag is Expression && draggedViewTag.string.length != 1 ) {
@@ -268,7 +285,10 @@ class ProblemActivity : AppCompatActivity() {
                     } else if (draggedViewTag is Expression.UnaryExpression) {
                         createDraggableExpr(draggedViewTag.expr)
                     }
+                    subtractScoreForOperator(draggedViewTag.symbol)
+                    resultTextView.text = "${score}"
                     createDraggableItem(getOperator(draggedViewTag.symbol)!!)
+
                 }
 
 
@@ -351,6 +371,7 @@ class ProblemActivity : AppCompatActivity() {
 
         operatorView.text = updatedText
         numberView.visibility = View.GONE
+
         if (operator.leftExpression != null && operator.rightExpression != null) {
             val newExpression = Expression.BinaryExpression(operator.leftExpression!!, operator, operator.rightExpression!!)
 
@@ -369,6 +390,7 @@ class ProblemActivity : AppCompatActivity() {
                 val layout = operatorView.parent as ViewGroup
                 layout.removeView(operatorView)
             }
+
             else if (!isContained) {
                 createDraggableExpr(operator.leftExpression!!)
                 createDraggableExpr(operator.rightExpression!!)
@@ -379,12 +401,18 @@ class ProblemActivity : AppCompatActivity() {
                 val layout = operatorView.parent as ViewGroup
                 layout.removeView(operatorView)
             }
+
             else if (newExpression.value == 1.0 && newExpression.operator.symbol == "=") {
+                val resultIntent = Intent()
+                resultIntent.putExtra("SCORE", score) // 점수값을 여기에 넣습니다.
+                setResult(RESULT_OK, resultIntent)
                 finish()
             }
-            else if (isContained) {
+
+            else {
+                addScoreForOperator(operator.symbol)
                 operatorView.tag = newExpression
-                resultTextView.text = "${newExpression.value} (${newExpression.string})"
+                resultTextView.text = "${score}"
                 Log.d(TAG, "Updated operator view: $updatedText")
                 Log.d(TAG, "Expression created: ${newExpression.value} (${newExpression.string})")
                 operator.leftExpression = null
