@@ -142,7 +142,7 @@ class ProblemActivity : AppCompatActivity() {
         val imageView = operatorView.getChildAt(0) as? ImageView
         setTextViewConstraints(operatorView, newTextView, imageView!!,50,60)
 
-        val rightText = expr.left.string
+        val rightText = expr.right.string
         val newTextView2 = TextView(this).apply {
             this.text = rightText
             this.id = View.generateViewId()
@@ -504,9 +504,9 @@ class ProblemActivity : AppCompatActivity() {
             setTextViewConstraints(operatorView, newTextView, imageView!!, 180, 80)
 
         } else if (inputExpression is Expression && operator.leftExpression == null) {
-            mergeLayouts(operatorView, numberView, 600)
+            mergeLayouts(operatorView, numberView, 480)
         } else {
-            mergeLayouts(operatorView, numberView, -600)
+            mergeLayouts(operatorView, numberView, -480)
         }
 
         if (operator.leftExpression == null) {
