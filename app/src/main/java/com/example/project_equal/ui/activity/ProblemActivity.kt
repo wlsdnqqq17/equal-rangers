@@ -136,7 +136,12 @@ class ProblemActivity : AppCompatActivity() {
         val textView = TextView(this).apply {
             this.text = text
             id = View.generateViewId()
-            this.gravity = Gravity.CENTER
+            this.gravity = Gravity.CENTER_VERTICAL
+            if (tag is Expression.Number) {
+                this.visibility = View.VISIBLE
+            } else {
+                this.visibility = View.GONE
+            }
         }
 
         val imageParams = RelativeLayout.LayoutParams(
@@ -150,8 +155,10 @@ class ProblemActivity : AppCompatActivity() {
             RelativeLayout.LayoutParams.WRAP_CONTENT,
             RelativeLayout.LayoutParams.WRAP_CONTENT
         ).apply {
-            addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE)
+            addRule(RelativeLayout.CENTER_HORIZONTAL, imageView.id)
+            addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE)
         }
+
 
         draggableItemLayout.addView(imageView, imageParams)
         draggableItemLayout.addView(textView, textParams)
@@ -326,20 +333,56 @@ class ProblemActivity : AppCompatActivity() {
         val inputExpression = numberView.tag as? Expression ?: return
         Log.d(TAG, "inputExpression: $inputExpression")
 
+        val operatorTextView = operatorView.getChildAt(1) as? TextView
+        val operatorText = operatorTextView!!.text.toString()
+        val numberText = inputExpression.string
+
+        if (operator.leftExpression == null && inputExpression is Expression.Number)
+        {
+            val newTextView = TextView(this).apply {
+                this.text = numberText
+                this.id = View.generateViewId()
+                this.gravity = Gravity.CENTER_VERTICAL
+            }
+            val textParams = RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                leftMargin = 70
+                topMargin = 80
+            }
+
+            operatorView.addView(newTextView, textParams)
+        }
+        else if (inputExpression is Expression.Number)
+        {
+            val newTextView = TextView(this).apply {
+                this.text = numberText
+                this.id = View.generateViewId()
+                this.gravity = Gravity.CENTER_VERTICAL
+            }
+            val textParams = RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                leftMargin = 370
+                topMargin = 80
+            }
+
+            operatorView.addView(newTextView, textParams)
+        }
+
         if (operator.leftExpression == null) {
             operator.leftExpression = inputExpression
         } else if (operator.rightExpression == null) {
             operator.rightExpression = inputExpression
         }
 
-        val operatorTextView = operatorView.getChildAt(1) as? TextView
-        val operatorText = operatorTextView!!.text.toString()
-        val numberText = inputExpression.string
-
         val updatedText = operatorText.replaceFirst("[]", numberText)
 
         operatorTextView.text = updatedText
         numberView.visibility = View.GONE
+
 
         if (operator is Operator.Negation || operator is Operator.Sqrt || operator is Operator.Square || operator is Operator.Cube || operator is Operator.Cbrt) {
             handleUnaryOperator(operatorView, operator)
