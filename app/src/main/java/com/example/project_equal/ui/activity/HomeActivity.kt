@@ -60,14 +60,15 @@ class HomeActivity : AppCompatActivity() {
     val shopItems = listOf(
         ShopItem("하니", 100, R.drawable.plus, 0),
         ShopItem("마니", 100, R.drawable.minus, 1),
-        ShopItem("타니", 300, R.drawable.multiply, 2),
-        ShopItem("디비", 300, R.drawable.divide, 3),
-        ShopItem("퀘어", 500, R.drawable.root2, 4),
-        ShopItem("트니", 500, R.drawable.root3, 5),
-        ShopItem("고비", 800, R.drawable.power2, 6),
-        ShopItem("큐브", 800, R.drawable.power3, 7),
-        ShopItem("코니", 1000, R.drawable.colon, 8),
-        ShopItem("퀴리", 2000, R.drawable.equal, 9),
+        ShopItem("네기", 100, R.drawable.negation, 2),
+        ShopItem("타니", 300, R.drawable.multiply, 3),
+        ShopItem("디비", 300, R.drawable.divide, 4),
+        ShopItem("퀘어", 500, R.drawable.root2, 5),
+        ShopItem("큐트", 500, R.drawable.root3, 6),
+        ShopItem("제리", 800, R.drawable.power2, 7),
+        ShopItem("큐브", 800, R.drawable.power3, 8),
+        ShopItem("코니", 1000, R.drawable.colon, 9),
+        ShopItem("쿼리", 2000, R.drawable.equal, 10),
     )
 
 
@@ -181,7 +182,7 @@ class HomeActivity : AppCompatActivity() {
         }
 
         return AlertDialog.Builder(this)
-            .setTitle("Shop")
+            .setTitle("이쿼리들")
             .setView(recyclerView)
             .setNegativeButton("Close", null)
             .create()
@@ -396,55 +397,62 @@ class HomeActivity : AppCompatActivity() {
                 result[3] = 500f
             }
             2 -> {
+                character.setImageResource(R.drawable.negation)
+                result[0] = -100f
+                result[1] = 2000f
+                result[2] = 100f
+                result[3] = 500f
+            }
+            3 -> {
                 character.setImageResource(R.drawable.multiply)
                 result[0] = -200f
                 result[1] = 400f
                 result[2] = 100f
                 result[3] = 500f
             }
-            3 -> {
+            4 -> {
                 character.setImageResource(R.drawable.divide)
                 result[0] = -500f
                 result[1] = 50f
                 result[2] = 100f
                 result[3] = 800f
             }
-            4 -> {
+            5 -> {
                 character.setImageResource(R.drawable.root2)
                 result[0] = -200f
                 result[1] = 500f
                 result[2] = 100f
                 result[3] = 800f
             }
-            5 -> {
+            6 -> {
                 character.setImageResource(R.drawable.root3)
                 result[0] = -200f
                 result[1] = 500f
                 result[2] = 100f
                 result[3] = 800f
             }
-            6 -> {
+            7 -> {
                 character.setImageResource(R.drawable.power2)
                 result[0] = -100f
                 result[1] = 500f
                 result[2] = 200f
                 result[3] = 800f
             }
-            7 -> {
+            8 -> {
                 character.setImageResource(R.drawable.power3)
                 result[0] = -100f
                 result[1] = 500f
                 result[2] = 200f
                 result[3] = 800f
             }
-            8 -> {
+            9 -> {
                 character.setImageResource(R.drawable.colon)
                 result[0] = -400f
                 result[1] = 150f
                 result[2] = 150f
                 result[3] = 500f
             }
-            9 -> {
+            10 -> {
                 character.setImageResource(R.drawable.equal)
                 result[0] = 0f
                 result[1] = 500f
@@ -522,7 +530,7 @@ class HomeActivity : AppCompatActivity() {
                 } else if (currentTranslationX < 0) {
                     moveDistance = abs(moveDistance)
                 }
-                if(moveDistance * character.scaleX < 0){
+                if(moveDistance * character.scaleX > 0){
                     character.scaleX *= -1
                 }
 
