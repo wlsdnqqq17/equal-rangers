@@ -109,6 +109,7 @@ class HomeActivity : AppCompatActivity() {
         startGameButton.setOnClickListener {
             val intent = Intent(this, ThreeChoiceActivity::class.java)
             startActivity(intent)
+            finish()
         }
 
         btnShowRanking = findViewById(R.id.btn_show_ranking)

@@ -216,4 +216,10 @@ class ThreeChoiceActivity : AppCompatActivity() {
         handler.removeCallbacks(timeoutRunnable)
         handler.postDelayed(timeoutRunnable, remainingTime)
     }
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val intent = Intent(this, HomeActivity::class.java)
+        startActivity(intent)
+        finish() // 현재 액티비티를 종료하여 BackStack에서 제거
+    }
 }
