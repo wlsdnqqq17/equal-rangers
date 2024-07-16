@@ -144,7 +144,7 @@ class ProblemActivity : AppCompatActivity() {
 
         val rightText = expr.left.string
         val newTextView2 = TextView(this).apply {
-            this.text = leftText
+            this.text = rightText
             this.id = View.generateViewId()
             this.gravity = Gravity.CENTER_VERTICAL
         }
