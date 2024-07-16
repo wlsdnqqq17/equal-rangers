@@ -14,6 +14,7 @@ import android.util.Log
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -50,12 +51,10 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var userIdTextView: TextView
     private lateinit var goldTextView: TextView
     private lateinit var highscoreTextView: TextView
-    private lateinit var btnShowRanking: Button
-    private lateinit var btnShowShop: Button
+    private lateinit var btnShowRanking: ImageButton
     private lateinit var random: Random
     private lateinit var items : MutableList<Int>
     private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var shopItemAdapter: ShopItemAdapter
     private var userGold = 0
     val shopItems = listOf(
         ShopItem("하니", 100, R.drawable.plus, 0),
@@ -94,13 +93,13 @@ class HomeActivity : AppCompatActivity() {
 
         val dialog = setShop(user_id!!)
 
-        val logoutButton = findViewById<Button>(R.id.btn_logout)
+        val logoutButton = findViewById<ImageButton>(R.id.btn_logout)
         logoutButton.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
                 logout()
             }
         }
-        val startGameButton = findViewById<Button>(R.id.btn_start_game)
+        val startGameButton = findViewById<ImageButton>(R.id.btn_start_game)
         startGameButton.setOnClickListener {
             val intent = Intent(this, ThreeChoiceActivity::class.java)
             startActivity(intent)
@@ -111,12 +110,8 @@ class HomeActivity : AppCompatActivity() {
             showRankingDialog()
         }
 
-        btnShowShop = findViewById(R.id.btn_show_shop)
-        btnShowShop.setOnClickListener {
-            showShopDialog()
-        }
 
-        findViewById<Button>(R.id.btn_show_shop).setOnClickListener {
+        findViewById<ImageButton>(R.id.btn_show_shop).setOnClickListener {
             dialog.show()
         }
 
@@ -255,22 +250,6 @@ class HomeActivity : AppCompatActivity() {
             }
         }
     }
-//
-//    private suspend fun getAccessToken(): String {
-//        return withContext(Dispatchers.IO) {
-//            try {
-//                val sharedPreferences = getSharedPreferences("login_prefs", Context.MODE_PRIVATE)
-//                val tokensJsonString = sharedPreferences.getString("user_token", null)
-//                val tokensJson = JSONObject(
-//                    tokensJsonString ?: throw IOException("User token not found or is null")
-//                )
-//
-//                tokensJson.getString("access")
-//            } catch (e: IOException) {
-//                throw IOException("Failed to read tokens.json")
-//            }
-//        }
-//    }
 
 
     private fun getAccessToken(): String {
@@ -499,10 +478,6 @@ class HomeActivity : AppCompatActivity() {
         val moveAnimatorX = ObjectAnimator.ofFloat(character, "translationX", currentTranslationX, currentTranslationX + moveDistance)
         moveAnimatorX.duration = 600
 
-//        moveAnimatorX.addUpdateListener { animation ->
-//            val value = animation.animatedValue as Float
-//            character.scaleX = if (value > 0) 1f else -1f // 좌우 이동에 따라 캐릭터 방향 조정
-//        }
 
         val jumpAnimatorSet = AnimatorSet()
 

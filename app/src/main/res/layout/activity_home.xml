@@ -63,51 +63,61 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.1"
         app:layout_constraintHorizontal_bias="0.3"/>
-    <Button
+
+    <ImageButton
         android:id="@+id/btn_start_game"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="게임 시작"
+        android:layout_width="1000dp"
+        android:layout_height="250dp"
+        android:src="@drawable/startbutton"
+        android:background="@null"
+        android:scaleType="fitCenter"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.9"/>
+        app:layout_constraintVertical_bias="1.02"
+        app:layout_constraintHorizontal_bias="0.43" />
 
-
-    <Button
-        android:id="@+id/btn_logout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="로그아웃"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.8" />
-
-    <Button
+    <ImageButton
         android:id="@+id/btn_show_ranking"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="랭킹 보기"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/ranking"
+        android:background="@null"
+        android:scaleType="fitCenter"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.7" />
-    <Button
+        app:layout_constraintVertical_bias="0.05"
+        app:layout_constraintHorizontal_bias="0.05" />
+
+    <ImageButton
+        android:id="@+id/btn_logout"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/logout"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="0.05"
+        app:layout_constraintHorizontal_bias="0.95" />
+
+    <ImageButton
         android:id="@+id/btn_show_shop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="상점"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/shop_image"
+        android:background="@null"
+        android:scaleType="fitCenter"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.25"
-        app:layout_constraintHorizontal_bias="0.9" />
-
-
+        app:layout_constraintVertical_bias="0.05"
+        app:layout_constraintHorizontal_bias="0.85" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
