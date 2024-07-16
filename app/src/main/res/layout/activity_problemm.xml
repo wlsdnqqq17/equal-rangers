@@ -4,7 +4,8 @@
     android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.activity.ProblemActivity">
+    tools:context=".ui.activity.ProblemActivity"
+    android:background="@color/white">
 
     <HorizontalScrollView
         android:id="@+id/horizontal_scroll_view"
@@ -164,7 +165,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="32dp"
-        android:text="@string/result"
         android:textSize="24sp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

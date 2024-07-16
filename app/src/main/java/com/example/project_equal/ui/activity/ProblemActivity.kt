@@ -26,9 +26,9 @@ class ProblemActivity : AppCompatActivity() {
     private val TAG = "ProblemActivity"
     private lateinit var deleteButton: ImageButton
     private lateinit var disasamButton: ImageButton
-    private lateinit var resultTextView: TextView
     private lateinit var problemNumber: String
     private var score: Int = 5
+    private var gold = 10
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +44,6 @@ class ProblemActivity : AppCompatActivity() {
     }
 
     private fun initializeViews() {
-        resultTextView = findViewById(R.id.result_text)
         deleteButton = findViewById(R.id.delete_button)
         disasamButton = findViewById(R.id.disassemble_button)
     }
@@ -389,7 +388,6 @@ class ProblemActivity : AppCompatActivity() {
                         createDraggableExpr(draggedViewTag.expr)
                     }
                     subtractScoreForOperator(draggedViewTag.symbol)
-                    resultTextView.text = "${score}"
                     createDraggableItem(getOperator(draggedViewTag.symbol)!!)
 
                 } else if (x >= deleteButtonX && x <= deleteButtonX + deleteButtonWidth &&
@@ -569,7 +567,6 @@ class ProblemActivity : AppCompatActivity() {
         val newExpression = Expression.UnaryExpression(operator, operator.leftExpression!!)
         addScoreForOperator(operator.symbol)
         operatorView.tag = newExpression
-        resultTextView.text = "$score"
         operator.leftExpression = null
         operator.rightExpression = null
     }
@@ -605,7 +602,7 @@ class ProblemActivity : AppCompatActivity() {
 
     private fun handleEqualExpression() {
         val resultIntent = Intent().apply { putExtra("SCORE", score) }
-        val data = arrayListOf(score, 10)
+        val data = arrayListOf(score, gold)
         resultIntent.putIntegerArrayListExtra("SCORE", data)
         setResult(RESULT_OK, resultIntent)
         finish()
@@ -615,8 +612,6 @@ class ProblemActivity : AppCompatActivity() {
         val operator = newExpression.operator // Extract the operator from newExpression
         addScoreForOperator(operator.symbol)
         operatorView.tag = newExpression
-        resultTextView.text = "$score"
-        resultTextView.append("\n${newExpression.value}, (${newExpression.string})") // Append the result instead of replacing the score
         operator.leftExpression = null
         operator.rightExpression = null
     }
