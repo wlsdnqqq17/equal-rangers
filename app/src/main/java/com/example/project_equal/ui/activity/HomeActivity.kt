@@ -14,6 +14,7 @@ import android.util.Log
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -50,24 +51,23 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var userIdTextView: TextView
     private lateinit var goldTextView: TextView
     private lateinit var highscoreTextView: TextView
-    private lateinit var btnShowRanking: Button
-    private lateinit var btnShowShop: Button
+    private lateinit var btnShowRanking: ImageButton
     private lateinit var random: Random
     private lateinit var items : MutableList<Int>
     private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var shopItemAdapter: ShopItemAdapter
     private var userGold = 0
     val shopItems = listOf(
         ShopItem("하니", 100, R.drawable.plus, 0),
         ShopItem("마니", 100, R.drawable.minus, 1),
-        ShopItem("타니", 300, R.drawable.multiply, 2),
-        ShopItem("디비", 300, R.drawable.divide, 3),
-        ShopItem("퀘어", 500, R.drawable.root2, 4),
-        ShopItem("트니", 500, R.drawable.root3, 5),
-        ShopItem("고비", 800, R.drawable.power2, 6),
-        ShopItem("큐브", 800, R.drawable.power3, 7),
-        ShopItem("코니", 1000, R.drawable.colon, 8),
-        ShopItem("퀴리", 2000, R.drawable.equal, 9),
+        ShopItem("네기", 100, R.drawable.negation, 2),
+        ShopItem("타니", 300, R.drawable.multiply, 3),
+        ShopItem("디비", 300, R.drawable.divide, 4),
+        ShopItem("퀘어", 500, R.drawable.root2, 5),
+        ShopItem("큐트", 500, R.drawable.root3, 6),
+        ShopItem("제리", 800, R.drawable.power2, 7),
+        ShopItem("큐브", 800, R.drawable.power3, 8),
+        ShopItem("코니", 1000, R.drawable.colon, 9),
+        ShopItem("쿼리", 2000, R.drawable.equal, 10),
     )
 
 
@@ -93,13 +93,13 @@ class HomeActivity : AppCompatActivity() {
 
         val dialog = setShop(user_id!!)
 
-        val logoutButton = findViewById<Button>(R.id.btn_logout)
+        val logoutButton = findViewById<ImageButton>(R.id.btn_logout)
         logoutButton.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
                 logout()
             }
         }
-        val startGameButton = findViewById<Button>(R.id.btn_start_game)
+        val startGameButton = findViewById<ImageButton>(R.id.btn_start_game)
         startGameButton.setOnClickListener {
             val intent = Intent(this, ThreeChoiceActivity::class.java)
             startActivity(intent)
@@ -110,12 +110,8 @@ class HomeActivity : AppCompatActivity() {
             showRankingDialog()
         }
 
-        btnShowShop = findViewById(R.id.btn_show_shop)
-        btnShowShop.setOnClickListener {
-            showShopDialog()
-        }
 
-        findViewById<Button>(R.id.btn_show_shop).setOnClickListener {
+        findViewById<ImageButton>(R.id.btn_show_shop).setOnClickListener {
             dialog.show()
         }
 
@@ -181,7 +177,7 @@ class HomeActivity : AppCompatActivity() {
         }
 
         return AlertDialog.Builder(this)
-            .setTitle("Shop")
+            .setTitle("이쿼리들")
             .setView(recyclerView)
             .setNegativeButton("Close", null)
             .create()
@@ -254,22 +250,6 @@ class HomeActivity : AppCompatActivity() {
             }
         }
     }
-//
-//    private suspend fun getAccessToken(): String {
-//        return withContext(Dispatchers.IO) {
-//            try {
-//                val sharedPreferences = getSharedPreferences("login_prefs", Context.MODE_PRIVATE)
-//                val tokensJsonString = sharedPreferences.getString("user_token", null)
-//                val tokensJson = JSONObject(
-//                    tokensJsonString ?: throw IOException("User token not found or is null")
-//                )
-//
-//                tokensJson.getString("access")
-//            } catch (e: IOException) {
-//                throw IOException("Failed to read tokens.json")
-//            }
-//        }
-//    }
 
 
     private fun getAccessToken(): String {
@@ -396,55 +376,62 @@ class HomeActivity : AppCompatActivity() {
                 result[3] = 500f
             }
             2 -> {
+                character.setImageResource(R.drawable.negation)
+                result[0] = -100f
+                result[1] = 2000f
+                result[2] = 100f
+                result[3] = 500f
+            }
+            3 -> {
                 character.setImageResource(R.drawable.multiply)
                 result[0] = -200f
                 result[1] = 400f
                 result[2] = 100f
                 result[3] = 500f
             }
-            3 -> {
+            4 -> {
                 character.setImageResource(R.drawable.divide)
                 result[0] = -500f
                 result[1] = 50f
                 result[2] = 100f
                 result[3] = 800f
             }
-            4 -> {
+            5 -> {
                 character.setImageResource(R.drawable.root2)
                 result[0] = -200f
                 result[1] = 500f
                 result[2] = 100f
                 result[3] = 800f
             }
-            5 -> {
+            6 -> {
                 character.setImageResource(R.drawable.root3)
                 result[0] = -200f
                 result[1] = 500f
                 result[2] = 100f
                 result[3] = 800f
             }
-            6 -> {
+            7 -> {
                 character.setImageResource(R.drawable.power2)
                 result[0] = -100f
                 result[1] = 500f
                 result[2] = 200f
                 result[3] = 800f
             }
-            7 -> {
+            8 -> {
                 character.setImageResource(R.drawable.power3)
                 result[0] = -100f
                 result[1] = 500f
                 result[2] = 200f
                 result[3] = 800f
             }
-            8 -> {
+            9 -> {
                 character.setImageResource(R.drawable.colon)
                 result[0] = -400f
                 result[1] = 150f
                 result[2] = 150f
                 result[3] = 500f
             }
-            9 -> {
+            10 -> {
                 character.setImageResource(R.drawable.equal)
                 result[0] = 0f
                 result[1] = 500f
@@ -491,10 +478,6 @@ class HomeActivity : AppCompatActivity() {
         val moveAnimatorX = ObjectAnimator.ofFloat(character, "translationX", currentTranslationX, currentTranslationX + moveDistance)
         moveAnimatorX.duration = 600
 
-//        moveAnimatorX.addUpdateListener { animation ->
-//            val value = animation.animatedValue as Float
-//            character.scaleX = if (value > 0) 1f else -1f // 좌우 이동에 따라 캐릭터 방향 조정
-//        }
 
         val jumpAnimatorSet = AnimatorSet()
 
@@ -522,7 +505,7 @@ class HomeActivity : AppCompatActivity() {
                 } else if (currentTranslationX < 0) {
                     moveDistance = abs(moveDistance)
                 }
-                if(moveDistance * character.scaleX < 0){
+                if(moveDistance * character.scaleX > 0){
                     character.scaleX *= -1
                 }
 
