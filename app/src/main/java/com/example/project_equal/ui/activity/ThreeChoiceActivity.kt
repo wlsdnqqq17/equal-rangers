@@ -3,6 +3,8 @@ package com.example.project_equal.ui.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
@@ -30,12 +32,33 @@ class ThreeChoiceActivity : AppCompatActivity() {
     lateinit var btn1: TextView
     lateinit var btn2: TextView
     lateinit var btn3: TextView
+    lateinit var nextButton: Button
     lateinit var playerManager: PlayerManager
     var score: Int = 0
     var gold:Int = 0
 
+    private val handler = Handler(Looper.getMainLooper())
+    private var remainingTime = TIMEOUT_DURATION
+    private val timeoutRunnable = Runnable {
+        navigateToGameResult()
+    }
+    private val updateTimeRunnable = object : Runnable {
+        override fun run() {
+            if (remainingTime > 0) {
+                remainingTime -= 1000
+                nextButton.text = "Next (${remainingTime / 1000}s)"
+                handler.postDelayed(this, 1000)
+            } else {
+                navigateToGameResult()
+            }
+        }
+    }
+
     companion object {
         const val REQUEST_CODE_PROBLEM = 1
+        const val TIMEOUT_DURATION = 60000L // 60 seconds in milliseconds
+        const val TIME_ADJUSTMENT = 5000L // 5 seconds in milliseconds
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,6 +69,7 @@ class ThreeChoiceActivity : AppCompatActivity() {
         btn1 = findViewById(R.id.choice1Button)
         btn2 = findViewById(R.id.choice2Button)
         btn3 = findViewById(R.id.choice3Button)
+        nextButton = findViewById(R.id.next_button)
 
         // Retrofit 인스턴스 생성
         val retrofit = Retrofit.Builder()
@@ -58,12 +82,9 @@ class ThreeChoiceActivity : AppCompatActivity() {
 
         fetchProblems()
         setupButtonListeners()
-        val nextButton: Button = findViewById(R.id.next_button)
-        nextButton.setOnClickListener(){
-            val intent = Intent(this, GameResult::class.java)
-            intent.putIntegerArrayListExtra("PROBLEM_RESULT", arrayListOf(score, gold))
-            startActivity(intent)
-            finish()
+
+        nextButton.setOnClickListener {
+            navigateToGameResult()
         }
     }
 
@@ -138,24 +159,35 @@ class ThreeChoiceActivity : AppCompatActivity() {
             intent.putExtra("PROBLEM_NUMBER", btn1.text.toString())
             problem_history.add(btn1.text.toString())
             startActivityForResult(intent, REQUEST_CODE_PROBLEM)
+            adjustTime(-TIME_ADJUSTMENT)
         }
         btn2.setOnClickListener {
             val intent = Intent(this, ProblemActivity::class.java)
             intent.putExtra("PROBLEM_NUMBER", btn2.text.toString())
             problem_history.add(btn2.text.toString())
             startActivityForResult(intent, REQUEST_CODE_PROBLEM)
+            adjustTime(-TIME_ADJUSTMENT)
         }
         btn3.setOnClickListener {
             val intent = Intent(this, ProblemActivity::class.java)
             intent.putExtra("PROBLEM_NUMBER", btn3.text.toString())
             problem_history.add(btn3.text.toString())
             startActivityForResult(intent, REQUEST_CODE_PROBLEM)
+            adjustTime(-TIME_ADJUSTMENT)
         }
     }
 
     override fun onResume() {
         super.onResume()
         fetchProblems()
+        handler.postDelayed(timeoutRunnable, TIMEOUT_DURATION)
+        handler.post(updateTimeRunnable)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        handler.removeCallbacks(timeoutRunnable)
+        handler.removeCallbacks(updateTimeRunnable)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -164,7 +196,24 @@ class ThreeChoiceActivity : AppCompatActivity() {
             val scoreGain = data?.getIntegerArrayListExtra("SCORE")!!
             score += scoreGain[0]
             gold += scoreGain[1]
+            adjustTime(TIME_ADJUSTMENT)
             Toast.makeText(this, "Score: $score, Gold:$gold", Toast.LENGTH_LONG).show()
         }
+    }
+
+    private fun navigateToGameResult() {
+        val intent = Intent(this, GameResult::class.java)
+        intent.putIntegerArrayListExtra("PROBLEM_RESULT", arrayListOf(score, gold))
+        startActivity(intent)
+        finish()
+    }
+    private fun adjustTime(amount: Long) {
+        remainingTime += amount
+        if (remainingTime < 0) {
+            remainingTime = 0
+        }
+        nextButton.text = "Next (${remainingTime / 1000}s)"
+        handler.removeCallbacks(timeoutRunnable)
+        handler.postDelayed(timeoutRunnable, remainingTime)
     }
 }
