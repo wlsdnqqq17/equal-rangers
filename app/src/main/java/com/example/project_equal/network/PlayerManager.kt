@@ -51,19 +51,31 @@ class PlayerManager(private val apiService: ApiService, private val context: Con
                 }
 
                 val json = JSONObject(responseBody.string())
+                Log.d("TEST", "BEFORE FAIL")
+
                 val itemJsonArray = json.getJSONArray("item")
+                Log.d("TEST", "NOOOOOOOOOOTTTTTTT FAIL TO PARSE ITEM JSON ARRRAY")
                 val itemList = mutableListOf<Int>()
                 for (i in 0 until itemJsonArray.length()) {
                     itemList.add(itemJsonArray.getInt(i))
                 }
+//                PlayerData(
+//                    userId = json.getString("user_id"),
+//                    nickname = json.getString("nickname"),
+//                    gold = json.getInt("gold"),
+//                    item = itemList,
+//                    highscore = json.getInt("highscore")
+//                )
+
+//                Log.d("TEST", "NOOOOOOOOOOTTTTTTT FAIL TO PARSE ITEM JSON ARRRAY")
                 PlayerData(
                     userId = json.getString("user_id"),
                     nickname = json.getString("nickname"),
-                    email = json.getString("email"),
                     gold = json.getInt("gold"),
                     item = itemList,
                     highscore = json.getInt("highscore")
                 )
+
             } catch (e: IOException) {
                 throw IOException("Failed to fetch player information: ${e.message}", e)
             } catch (e: JSONException) {
@@ -136,9 +148,9 @@ class PlayerManager(private val apiService: ApiService, private val context: Con
                 val url = "$base_url/api/players/$userId/update/"
                 val json = JSONObject()
                 json.put("nickname", playerData.nickname)
-                json.put("email", playerData.email)
                 json.put("gold", playerData.gold)
                 json.put("highscore", playerData.highscore)
+                json.put("item", playerData.item)
                 // Add other fields as needed
 
                 val mediaType = "application/json; charset=utf-8".toMediaType()
@@ -175,7 +187,6 @@ class PlayerManager(private val apiService: ApiService, private val context: Con
                 PlayerData(
                     userId = jsonResponse.getString("user_id"),
                     nickname = jsonResponse.getString("nickname"),
-                    email = jsonResponse.getString("email"),
                     gold = jsonResponse.getInt("gold"),
                     item = listOf(0),
                     highscore = jsonResponse.getInt("highscore")
@@ -196,7 +207,6 @@ class PlayerManager(private val apiService: ApiService, private val context: Con
                 val updatedData = currentPlayer.copy(
                     userId = partialData["userId"] as String? ?: currentPlayer.userId,
                     nickname = partialData["nickname"] as String? ?: currentPlayer.nickname,
-                    email = partialData["email"] as String? ?: currentPlayer.email,
                     gold = partialData["gold"] as Int? ?: currentPlayer.gold,
                     highscore = partialData["highscore"] as Int? ?: currentPlayer.highscore
                     // Handle other fields similarly

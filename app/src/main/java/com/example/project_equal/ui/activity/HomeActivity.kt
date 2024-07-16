@@ -1,12 +1,14 @@
 package com.example.project_equal.ui.activity
 
 import PlayerManager
+import ShopItemAdapter
 import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
@@ -16,6 +18,7 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,6 +28,7 @@ import com.example.project_equal.network.LogoutRequest
 import com.example.project_equal.network.PlayerData
 import com.example.project_equal.network.RankData
 import com.example.project_equal.network.RankingAdapter
+import com.example.project_equal.network.ShopItem
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.*
 import okhttp3.OkHttpClient
@@ -47,8 +51,25 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var goldTextView: TextView
     private lateinit var highscoreTextView: TextView
     private lateinit var btnShowRanking: Button
+    private lateinit var btnShowShop: Button
     private lateinit var random: Random
     private lateinit var items : MutableList<Int>
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var shopItemAdapter: ShopItemAdapter
+    private var userGold = 0
+    val shopItems = listOf(
+        ShopItem("하니", 100, R.drawable.plus, 0),
+        ShopItem("마니", 100, R.drawable.minus, 1),
+        ShopItem("타니", 300, R.drawable.multiply, 2),
+        ShopItem("디비", 300, R.drawable.divide, 3),
+        ShopItem("퀘어", 500, R.drawable.root2, 4),
+        ShopItem("트니", 500, R.drawable.root3, 5),
+        ShopItem("고비", 800, R.drawable.power2, 6),
+        ShopItem("큐브", 800, R.drawable.power3, 7),
+        ShopItem("코니", 1000, R.drawable.colon, 8),
+        ShopItem("퀴리", 2000, R.drawable.equal, 9),
+    )
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,7 +79,7 @@ class HomeActivity : AppCompatActivity() {
         goldTextView = findViewById(R.id.gold_text)
         highscoreTextView = findViewById(R.id.highscore)
 
-        val sharedPreferences = getSharedPreferences("login_prefs", Context.MODE_PRIVATE)
+        sharedPreferences = getSharedPreferences("login_prefs", Context.MODE_PRIVATE)
         val user_id = sharedPreferences.getString("user_id", null)
         val client = OkHttpClient.Builder().build()
         val retrofit = Retrofit.Builder()
@@ -69,6 +90,8 @@ class HomeActivity : AppCompatActivity() {
 
         apiService = retrofit.create(ApiService::class.java)
         playerManager = PlayerManager(apiService, this)
+
+        val dialog = setShop(user_id!!)
 
         val logoutButton = findViewById<Button>(R.id.btn_logout)
         logoutButton.setOnClickListener {
@@ -86,6 +109,16 @@ class HomeActivity : AppCompatActivity() {
         btnShowRanking.setOnClickListener {
             showRankingDialog()
         }
+
+        btnShowShop = findViewById(R.id.btn_show_shop)
+        btnShowShop.setOnClickListener {
+            showShopDialog()
+        }
+
+        findViewById<Button>(R.id.btn_show_shop).setOnClickListener {
+            dialog.show()
+        }
+
 
         user_id?.let {
             CoroutineScope(Dispatchers.IO).launch {
@@ -107,13 +140,75 @@ class HomeActivity : AppCompatActivity() {
         } ?: run {
             Toast.makeText(this@HomeActivity, "User ID not found.", Toast.LENGTH_SHORT).show()
         }
-//
-//        val characterContainer = findViewById<RelativeLayout>(R.id.characterContainer)
-////        val characters = items
-//        for (i in 0 until items.size) {
-//            addCharacter(characterContainer, i, items[i])
-//        }
     }
+
+    private fun setShop(user_id: String): AlertDialog {
+        val recyclerView = RecyclerView(this).apply {
+            layoutManager = LinearLayoutManager(this@HomeActivity)
+            adapter = ShopItemAdapter(shopItems) { item ->
+                if (userGold >= item.price) {
+                    Log.d("INSETSHOP", "ONBUYBUTTONCLICKED,  $userGold, $items")
+                CoroutineScope(Dispatchers.Main).launch {
+                    try {
+                        val accessToken = withContext(Dispatchers.IO) { getAccessToken() }
+                        userGold -= item.price
+                        items.add(item.itemNum)
+
+                        // UI 업데이트는 Main 스레드에서 수행
+                        Toast.makeText(
+                            this@HomeActivity,
+                            "Purchased ${item.name}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                        val playerData = withContext(Dispatchers.IO) { playerManager.getPlayerInfo(user_id, accessToken) }
+                        val updatedPlayerData = playerData.copy(gold = userGold, item = items)
+                        Log.d("HOME ACTIVITY", "${updatedPlayerData.item}")
+                        withContext(Dispatchers.IO) { playerManager.updatePlayerInfo(user_id, updatedPlayerData, accessToken) }
+                        updateUI(updatedPlayerData)
+                    } catch (e: Exception) {
+                        Toast.makeText(
+                            this@HomeActivity,
+                            "Failed to purchase item: ${e.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+                } else {
+                    Toast.makeText(this@HomeActivity, "외상은 사양이에요", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        return AlertDialog.Builder(this)
+            .setTitle("Shop")
+            .setView(recyclerView)
+            .setNegativeButton("Close", null)
+            .create()
+    }
+
+    private fun showShopDialog() {
+        val dialog = BottomSheetDialog(this)
+        val dialogView = layoutInflater.inflate(R.layout.ranking_bottom_sheet, null)
+        dialog.setContentView(dialogView)
+
+        val rankingList = dialogView.findViewById<RecyclerView>(R.id.ranking_list)
+        rankingList.layoutManager = LinearLayoutManager(this)
+
+        dialog.show()
+
+        CoroutineScope(Dispatchers.Main).launch {
+            try {
+                val rankings = fetchRankings()
+                rankingList.adapter = RankingAdapter(rankings)
+            } catch (e: Exception) {
+                // Handle error
+                Log.e("HomeActivity", "Failed to fetch rankings: ${e.message}")
+                Toast.makeText(this@HomeActivity, "Failed to fetch rankings", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
 
     private fun showRankingDialog() {
         val dialog = BottomSheetDialog(this)
@@ -159,22 +254,38 @@ class HomeActivity : AppCompatActivity() {
             }
         }
     }
+//
+//    private suspend fun getAccessToken(): String {
+//        return withContext(Dispatchers.IO) {
+//            try {
+//                val sharedPreferences = getSharedPreferences("login_prefs", Context.MODE_PRIVATE)
+//                val tokensJsonString = sharedPreferences.getString("user_token", null)
+//                val tokensJson = JSONObject(
+//                    tokensJsonString ?: throw IOException("User token not found or is null")
+//                )
+//
+//                tokensJson.getString("access")
+//            } catch (e: IOException) {
+//                throw IOException("Failed to read tokens.json")
+//            }
+//        }
+//    }
 
-    private suspend fun getAccessToken(): String {
-        return withContext(Dispatchers.IO) {
-            try {
-                val sharedPreferences = getSharedPreferences("login_prefs", Context.MODE_PRIVATE)
-                val tokensJsonString = sharedPreferences.getString("user_token", null)
-                val tokensJson = JSONObject(
-                    tokensJsonString ?: throw IOException("User token not found or is null")
-                )
 
-                tokensJson.getString("access")
-            } catch (e: IOException) {
-                throw IOException("Failed to read tokens.json")
-            }
+    private fun getAccessToken(): String {
+        try {
+            val sharedPreferences = getSharedPreferences("login_prefs", Context.MODE_PRIVATE)
+            val tokensJsonString = sharedPreferences.getString("user_token", null)
+            val tokensJson = JSONObject(
+                tokensJsonString ?: throw IOException("User token not found or is null")
+            )
+
+            return tokensJson.getString("access")
+        } catch (e: IOException) {
+            throw IOException("Failed to read tokens.json")
         }
     }
+
 
     private suspend fun getPlayerInfo(userId: String) {
         try {
@@ -195,15 +306,16 @@ class HomeActivity : AppCompatActivity() {
 
     private suspend fun updateUI(playerData: PlayerData) {
         withContext(Dispatchers.Main) {
+            userGold = playerData.gold
             userIdTextView.text = playerData.nickname
-            goldTextView.text = playerData.gold.toString()
+            goldTextView.text = userGold.toString()
             highscoreTextView.text = playerData.highscore.toString()
             Log.d("PLAYERDATA", "${playerData.item}")
             items = playerData.item.toMutableList()
             setAnimation(items)
             Log.d(
                 "updateUI",
-                "username: ${playerData.userId}, nickname: ${playerData.nickname}, email: ${playerData.email}"
+                "username: ${playerData.userId}, nickname: ${playerData.nickname}"
             )
         }
     }
@@ -211,6 +323,19 @@ class HomeActivity : AppCompatActivity() {
     private suspend fun setAnimation(items: MutableList<Int>){
         val characterContainer = findViewById<RelativeLayout>(R.id.characterContainer)
 //        val characters = items
+        characterContainer.removeAllViews() // 기존의 캐릭터 이미지들을 모두 제거
+
+// 배경 이미지 설정
+        val backgroundView = ImageView(this)
+        backgroundView.layoutParams = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
+        backgroundView.scaleType = ImageView.ScaleType.CENTER_CROP
+        backgroundView.setImageResource(R.drawable.home_background)
+
+// backgroundView를 RelativeLayout에 추가
+        characterContainer.addView(backgroundView, 0)
         Log.d("test", "$items")
         for (i in 0 until items.size) {
             addCharacter(characterContainer, i, items[i])
@@ -349,7 +474,7 @@ class HomeActivity : AppCompatActivity() {
         params.height = 200
 
         // 캐릭터를 배치할 위치 설정
-        params.leftMargin = index * 300 // 각 캐릭터를 좌우로 배치
+        params.leftMargin = index * 300 % container.width// 각 캐릭터를 좌우로 배치
         params.addRule(RelativeLayout.CENTER_VERTICAL)
 
         character.layoutParams = params
@@ -418,5 +543,26 @@ class HomeActivity : AppCompatActivity() {
     private fun clearTokens() {
         val sharedPreferences = getSharedPreferences("login_prefs", Context.MODE_PRIVATE)
         sharedPreferences.edit().clear().apply()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val user_id = sharedPreferences.getString("user_id", null)
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val accessToken = getAccessToken()
+                Log.d("IN HOMEACTIVITY", accessToken)
+                getPlayerInfo(user_id!!)
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        this@HomeActivity,
+                        "Failed to fetch player information.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    Log.e("HomeActivity", "Error: ${e.message}")
+                }
+            }
+        }
     }
 }
