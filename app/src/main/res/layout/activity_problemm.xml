@@ -27,7 +27,7 @@
                 android:padding="0dp"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/equal"
-                android:src="@drawable/equal" />
+                android:src="@drawable/equalbutton" />
 
             <ImageButton
                 android:id="@+id/plus_button"
@@ -36,7 +36,7 @@
                 android:padding="0dp"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/plus"
-                android:src="@drawable/plus" />
+                android:src="@drawable/plusbutton" />
 
             <ImageButton
                 android:id="@+id/minus_button"
@@ -45,7 +45,7 @@
                 android:padding="0dp"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/minus"
-                android:src="@drawable/minus" />
+                android:src="@drawable/minusbutton" />
 
             <ImageButton
                 android:id="@+id/multiply_button"
@@ -54,7 +54,7 @@
                 android:padding="0dp"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/multiply"
-                android:src="@drawable/multiply" />
+                android:src="@drawable/multiplybutton" />
 
             <ImageButton
                 android:id="@+id/divide_button"
@@ -63,7 +63,7 @@
                 android:padding="0dp"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/divide"
-                android:src="@drawable/divide" />
+                android:src="@drawable/dividebutton" />
 
             <ImageButton
                 android:id="@+id/negation_button"
@@ -72,7 +72,7 @@
                 android:padding="0dp"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/negation"
-                android:src="@drawable/minus" />
+                android:src="@drawable/minusbutton" />
 
             <ImageButton
                 android:id="@+id/square_button"
@@ -81,7 +81,7 @@
                 android:padding="0dp"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/square"
-                android:src="@drawable/power2" />
+                android:src="@drawable/power2button" />
 
             <ImageButton
                 android:id="@+id/sqrt_button"
@@ -90,7 +90,7 @@
                 android:padding="0dp"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/sqrt"
-                android:src="@drawable/root2" />
+                android:src="@drawable/root2button" />
 
             <ImageButton
                 android:id="@+id/cube_button"
@@ -99,7 +99,7 @@
                 android:padding="0dp"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/cube"
-                android:src="@drawable/power3" />
+                android:src="@drawable/power3button" />
 
             <ImageButton
                 android:id="@+id/cbrt_button"
@@ -108,7 +108,7 @@
                 android:padding="0dp"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/cbrt"
-                android:src="@drawable/root3" />
+                android:src="@drawable/root3button" />
 
             <ImageButton
                 android:id="@+id/colon_button"
@@ -117,7 +117,7 @@
                 android:padding="0dp"
                 android:contentDescription="@string/colon"
                 android:background="@android:color/transparent"
-                android:src="@drawable/colon" />
+                android:src="@drawable/colonbutton" />
         </LinearLayout>
     </HorizontalScrollView>
 

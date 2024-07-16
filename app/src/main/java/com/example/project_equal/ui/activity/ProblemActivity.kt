@@ -107,17 +107,17 @@ class ProblemActivity : AppCompatActivity() {
             else -> "[]"
         }
         val imgSrcId = when (operator) {
-            is Operator.Addition -> R.drawable.plus
-            is Operator.Subtraction -> R.drawable.minus
-            is Operator.Multiplication -> R.drawable.multiply
-            is Operator.Division -> R.drawable.divide
-            is Operator.Negation -> R.drawable.minus
-            is Operator.Sqrt -> R.drawable.root2
-            is Operator.Square -> R.drawable.power2
-            is Operator.Cube -> R.drawable.power3
-            is Operator.Cbrt -> R.drawable.root3
-            is Operator.Equal -> R.drawable.equal
-            else -> R.drawable.plus
+            is Operator.Addition -> R.drawable.plusbutton
+            is Operator.Subtraction -> R.drawable.minusbutton
+            is Operator.Multiplication -> R.drawable.multiplybutton
+            is Operator.Division -> R.drawable.dividebutton
+            is Operator.Negation -> R.drawable.minusbutton
+            is Operator.Sqrt -> R.drawable.root2button
+            is Operator.Square -> R.drawable.power2button
+            is Operator.Cube -> R.drawable.power3button
+            is Operator.Cbrt -> R.drawable.root3button
+            is Operator.Equal -> R.drawable.equalbutton
+            else -> R.drawable.plusbutton
         }
         createDraggableItemView(text, operator, imgSrcId)
     }
