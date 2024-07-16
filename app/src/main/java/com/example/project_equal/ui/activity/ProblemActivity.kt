@@ -72,12 +72,27 @@ class ProblemActivity : AppCompatActivity() {
     }
 
     private fun createDraggableNumbersFromProblem(problem: String) {
-        problem.forEach { char ->
+        val rootLayout = findViewById<ConstraintLayout>(R.id.root_layout)
+        val screenWidth = resources.displayMetrics.widthPixels
+        val itemWidth = 200
+        val startX = (screenWidth - (itemWidth * problem.length)) / 2
+        val verticalOffset = 400
+
+        problem.forEachIndexed { index, char ->
             if (char.isDigit()) {
-                createDraggableNumber(char - '0')
+                val numberView = createDraggableNumber(char - '0')
+                rootLayout.addView(numberView)
+
+                val set = ConstraintSet()
+                set.clone(rootLayout)
+
+                set.connect(numberView.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, startX + (index * itemWidth))
+                set.connect(numberView.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 100 + verticalOffset) // 중앙보다 아래로 배치
+                set.applyTo(rootLayout)
             }
         }
     }
+
 
     private fun createDraggableExpr(expr: Expression) {
         createDraggableItemView(expr.string, expr)
@@ -87,8 +102,58 @@ class ProblemActivity : AppCompatActivity() {
         createDraggableItemView("[] = []", operator, R.drawable.exequal)
     }
 
-    private fun createDraggableNumber(number: Int) {
-        createDraggableItemView(number.toString(), Expression.Number(number), R.drawable.number)
+    private fun createDraggableNumber(number: Int): ConstraintLayout {
+        val draggableItemLayout = ConstraintLayout(this).apply {
+            this.tag = Expression.Number(number)
+            this.id = View.generateViewId()
+        }
+
+        val imageView = ImageView(this).apply {
+            setImageResource(R.drawable.number) // 원하는 이미지 리소스로 변경하세요
+            id = View.generateViewId()
+        }
+
+        val textView = TextView(this).apply {
+            this.text = number.toString()
+            id = View.generateViewId()
+            this.gravity = Gravity.CENTER_VERTICAL
+            this.visibility = View.VISIBLE
+        }
+
+        draggableItemLayout.addView(imageView, ConstraintLayout.LayoutParams(
+            ConstraintLayout.LayoutParams.WRAP_CONTENT,
+            ConstraintLayout.LayoutParams.WRAP_CONTENT).apply {
+            endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
+            startToStart = ConstraintLayout.LayoutParams.PARENT_ID
+            topToTop = ConstraintLayout.LayoutParams.PARENT_ID
+            bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
+        })
+
+        draggableItemLayout.addView(textView, ConstraintLayout.LayoutParams(
+            ConstraintLayout.LayoutParams.WRAP_CONTENT,
+            ConstraintLayout.LayoutParams.WRAP_CONTENT).apply {
+            endToEnd = imageView.id
+            startToStart = imageView.id
+            topToTop = imageView.id
+            bottomToBottom = imageView.id
+        })
+
+        draggableItemLayout.setOnTouchListener { view, event ->
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                val clipText = number.toString()
+                val item = ClipData.Item(clipText)
+                val mimeTypes = arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN)
+                val dragData = ClipData(clipText, mimeTypes, item)
+                val dragShadow = View.DragShadowBuilder(view)
+                view.startDragAndDrop(dragData, dragShadow, view, 0)
+                view.visibility = View.INVISIBLE
+                true
+            } else {
+                false
+            }
+        }
+
+        return draggableItemLayout
     }
 
     private fun createDraggableItem(operator: Operator) {
