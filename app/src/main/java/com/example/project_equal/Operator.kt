@@ -69,6 +69,12 @@ abstract class Operator(val symbol: String) {
             return cbrt(left)
         }
     }
+
+    class Colon : Operator(":") {
+        override fun apply(left: Double, right: Double?): Double {
+            return 10 * left + (right ?: 0.0)
+        }
+    }
 }
 
 fun getOperator(symbol: String): Operator? {

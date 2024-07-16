@@ -59,7 +59,8 @@ class ProblemActivity : AppCompatActivity() {
             R.id.sqrt_button to Operator.Sqrt(),
             R.id.square_button to Operator.Square(),
             R.id.cube_button to Operator.Cube(),
-            R.id.cbrt_button to Operator.Cbrt()
+            R.id.cbrt_button to Operator.Cbrt(),
+            R.id.colon_button to Operator.Colon()
         )
 
         for ((buttonId, operator) in operators) {
@@ -105,6 +106,7 @@ class ProblemActivity : AppCompatActivity() {
             is Operator.Square -> "[]^"
             is Operator.Cube -> "[]^^"
             is Operator.Cbrt -> "cbrt[]"
+            is Operator.Colon -> "[] : []"
             else -> "[]"
         }
         val imgSrcId = when (operator) {
@@ -112,11 +114,12 @@ class ProblemActivity : AppCompatActivity() {
             is Operator.Subtraction -> R.drawable.exminus
             is Operator.Multiplication -> R.drawable.exmultiply
             is Operator.Division -> R.drawable.exdivide
-            is Operator.Negation -> R.drawable.exminus
+            is Operator.Negation -> R.drawable.exnegation
             is Operator.Sqrt -> R.drawable.exroot2
             is Operator.Square -> R.drawable.expower2
             is Operator.Cube -> R.drawable.expower3
             is Operator.Cbrt -> R.drawable.exroot3
+            is Operator.Colon -> R.drawable.excolon
             is Operator.Equal -> R.drawable.exequal
             else -> R.drawable.number
         }
@@ -203,6 +206,7 @@ class ProblemActivity : AppCompatActivity() {
             "*", "/" -> 2
             "--" -> 1
             "sqrt", "^", "^^", "cbrt" -> 3
+            ":" -> 5
             else -> 0
         }
         Log.d(TAG, "Score updated: $score")
@@ -214,6 +218,7 @@ class ProblemActivity : AppCompatActivity() {
             "*", "/" -> 2
             "--" -> 1
             "sqrt", "^", "^^", "cbrt" -> 3
+            ":" -> 5
             else -> 0
         }
         Log.d(TAG, "Score updated: $score")
@@ -291,26 +296,20 @@ class ProblemActivity : AppCompatActivity() {
         if (overlappingView != null && overlappingView is ConstraintLayout && isOperator(overlappingView.tag)) {
             updateOperatorView(overlappingView, draggedView as ConstraintLayout)
         } else {
-            // 새로운 ID를 생성합니다.
             if (draggedView.id == View.NO_ID) {
                 draggedView.id = View.generateViewId()
             }
 
-            // 드래거블 아이템을 ConstraintLayout에 추가합니다.
             layout.addView(draggedView)
 
-            // 기존의 ConstraintSet을 가져옵니다.
             val set = ConstraintSet()
             set.clone(layout)
 
-            // 드래거블 아이템의 위치를 설정합니다.
             set.connect(draggedView.id, ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, x - (draggedView.width / 2))
             set.connect(draggedView.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, y - (draggedView.height / 2))
 
-            // ConstraintSet을 적용합니다.
             set.applyTo(layout)
 
-            // 드래거블 아이템의 가시성을 VISIBLE로 설정합니다.
             draggedView.visibility = View.VISIBLE
             Log.d(TAG, "View dropped at x: $x, y: $y")
         }
@@ -357,10 +356,10 @@ class ProblemActivity : AppCompatActivity() {
             }
             operatorView.addView(newTextView)
             if (operator is Operator.Negation || operator is Operator.Sqrt || operator is Operator.Square || operator is Operator.Cube || operator is Operator.Cbrt) {
-                setTextViewConstraints(operatorView, newTextView, imageView!!, 220, 80)
+                setTextViewConstraints(operatorView, newTextView, imageView!!, 210, 80)
             }
             else {
-                setTextViewConstraints(operatorView, newTextView, imageView!!, 50, 80)
+                setTextViewConstraints(operatorView, newTextView, imageView!!, 70, 80)
             }
         } else if (inputExpression is Expression.Number) {
             val newTextView = TextView(this).apply {
@@ -370,9 +369,21 @@ class ProblemActivity : AppCompatActivity() {
                 this.gravity = Gravity.CENTER_VERTICAL
             }
             operatorView.addView(newTextView)
-            setTextViewConstraints(operatorView, newTextView, imageView!!,350,80)
+            setTextViewConstraints(operatorView, newTextView, imageView!!,380,80)
+        } else if (operator is Operator.Negation || operator is Operator.Sqrt || operator is Operator.Square || operator is Operator.Cube || operator is Operator.Cbrt){
+            val newTextView = TextView(this).apply {
+                this.text = inputExpression.value.toString()
+                this.id = View.generateViewId()
+                Log.d(TAG, "newTextView: ${this.id}")
+                this.gravity = Gravity.CENTER_VERTICAL
+            }
+            operatorView.addView(newTextView)
+            setTextViewConstraints(operatorView, newTextView, imageView!!, 210, 80)
+
         } else if (inputExpression is Expression && operator.leftExpression == null) {
-            mergeLayouts(operatorView, numberView)
+            mergeLayouts(operatorView, numberView, 600)
+        } else {
+            mergeLayouts(operatorView, numberView, -600)
         }
 
         if (operator.leftExpression == null) {
@@ -402,7 +413,7 @@ class ProblemActivity : AppCompatActivity() {
     }
 
 
-    private fun mergeLayouts(operatorView: ConstraintLayout, numberView: ConstraintLayout) {
+    private fun mergeLayouts(operatorView: ConstraintLayout, numberView: ConstraintLayout, padding: Int) {
         val childCount = numberView.childCount
         val children = mutableListOf<View>()
 
@@ -411,15 +422,19 @@ class ProblemActivity : AppCompatActivity() {
             children.add(numberView.getChildAt(i))
         }
 
-        // 복사한 자식들로 작업
         for (child in children) {
             numberView.removeView(child)
 
-            // 기존 LayoutParams를 그대로 사용
             val layoutParams = child.layoutParams as ConstraintLayout.LayoutParams
 
-            // 새로운 자식 뷰인지 확인
-            child.setPadding(child.paddingLeft, child.paddingTop, child.paddingRight + 600, child.paddingBottom)
+            if (padding >= 0){
+                child.setPadding(child.paddingLeft, child.paddingTop, child.paddingRight + padding, child.paddingBottom)
+
+            }
+            else {
+                child.setPadding(child.paddingLeft - padding, child.paddingTop, child.paddingRight, child.paddingBottom)
+
+            }
 
 
             operatorView.addView(child, layoutParams)
@@ -441,10 +456,12 @@ class ProblemActivity : AppCompatActivity() {
 
     private fun handleBinaryOperator(operatorView: ConstraintLayout, operator: Operator) {
         val newExpression = Expression.BinaryExpression(operator.leftExpression!!, operator, operator.rightExpression!!)
-        val filteredText = newExpression.string.filterNot { it in "+-*/= sqrtcbrt^^".toList() }
+        val filteredText = newExpression.string.filterNot { it in "+-*/= sqrtcbrt^^:".toList() }
         val isContained = problemNumber.contains(filteredText)
 
         if (operator.symbol == "/" && operator.rightExpression!!.value == 0.0) {
+            resetOperatorView(operator, operatorView)
+        } else if (operator.symbol == ":" && operator.leftExpression!!.value == 0.0) {
             resetOperatorView(operator, operatorView)
         } else if (!isContained) {
             resetOperatorView(operator, operatorView)
