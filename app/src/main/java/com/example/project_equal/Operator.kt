@@ -89,6 +89,8 @@ fun getOperator(symbol: String): Operator? {
         "sqrt" -> Operator.Sqrt()
         "^^" -> Operator.Cube()
         "cbrt" -> Operator.Cbrt()
+        ":" -> Operator.Colon()
+
         else -> null
     }
 }

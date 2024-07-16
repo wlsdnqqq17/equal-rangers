@@ -63,6 +63,7 @@ class ThreeChoiceActivity : AppCompatActivity() {
             val intent = Intent(this, GameResult::class.java)
             intent.putIntegerArrayListExtra("PROBLEM_RESULT", arrayListOf(score, gold))
             startActivity(intent)
+            finish()
         }
     }
 

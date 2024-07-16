@@ -3,6 +3,7 @@ package com.example.project_equal.ui.activity
 import PlayerManager
 import android.animation.ValueAnimator
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
@@ -17,11 +18,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
-import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.awaitResponse
 import retrofit2.converter.gson.GsonConverterFactory
-import java.io.IOException
 
 class GameResult : AppCompatActivity() {
     private lateinit var playerManager: PlayerManager
@@ -31,9 +30,8 @@ class GameResult : AppCompatActivity() {
     private var gainGold: Int = 0
     private lateinit var scoreTextView: TextView
     private lateinit var goldTextView: TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
-
-
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_game_result)
@@ -42,8 +40,9 @@ class GameResult : AppCompatActivity() {
         val data = intent.getIntegerArrayListExtra("PROBLEM_RESULT")!!
         score = data[0]
         gainGold = data[1]
-        score = 100
-        gainGold = 100
+        //score = 100
+        //gainGold = 100
+
         // SharedPreferences에서 userId와 accessToken 가져오기
         val sharedPreferences = getSharedPreferences("login_prefs", Context.MODE_PRIVATE)
         userId = sharedPreferences.getString("user_id", "") ?: ""
@@ -57,6 +56,7 @@ class GameResult : AppCompatActivity() {
             .build()
         scoreTextView = findViewById(R.id.scoreTextView)
         goldTextView = findViewById(R.id.goldTextView)
+
         // ApiService 인터페이스 구현체 생성
         val apiService = retrofit.create(ApiService::class.java)
 
@@ -105,6 +105,7 @@ class GameResult : AppCompatActivity() {
             }
         }
     }
+
     private suspend fun updateRank(apiService: ApiService, accessToken: String) {
         CoroutineScope(Dispatchers.Main).launch {
             try {
@@ -118,7 +119,7 @@ class GameResult : AppCompatActivity() {
                         Toast.makeText(this@GameResult, "Rank updated successfully", Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    if(response.code() == 403 || response.code() == 401){
+                    if (response.code() == 403 || response.code() == 401) {
                         Log.d("PlayerManager", "Access token expired. Refreshing token...")
                         val newAccessToken = playerManager.refreshAccessToken()
                         // Retry with the new access token
@@ -135,40 +136,12 @@ class GameResult : AppCompatActivity() {
                 }
             }
         }
-//        withContext(Dispatchers.IO) {
-//            try {
-//                val rankData = RankData(user_id = userId, score = score)
-//                val response = apiService.updateRank("Bearer $accessToken", rankData).awaitResponse()
-//
-//                if (response.isSuccessful) {
-//                    withContext(Dispatchers.Main) {
-//                        Toast.makeText(this@GameResult, "Rank updated successfully", Toast.LENGTH_SHORT).show()
-//                    }
-//                } else {
-//                    withContext(Dispatchers.Main) {
-//                        Toast.makeText(this@GameResult, "Failed to update rank: ${response.code()}", Toast.LENGTH_SHORT).show()
-//                    }
-//                }
-//            } catch (e: Exception) {
-//                Log.e("game_result", "Failed to update rank: ${e.message}")
-//                withContext(Dispatchers.Main) {
-//                    Toast.makeText(this@GameResult, "Failed to update rank", Toast.LENGTH_SHORT).show()
-//                }
-//            }
-//        }
     }
 
-    private suspend fun getAccessToken(): String {
-        return withContext(Dispatchers.IO) {
-            try {
-                val sharedPreferences = getSharedPreferences("login_prefs", Context.MODE_PRIVATE)
-                val tokensJsonString = sharedPreferences.getString("user_token", null)
-                val tokensJson = JSONObject(tokensJsonString ?: throw IOException("User token not found or is null"))
-
-                tokensJson.getString("access")
-            } catch (e: IOException) {
-                throw IOException("Failed to read tokens.json")
-            }
-        }
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val intent = Intent(this, HomeActivity::class.java)
+        startActivity(intent)
+        finish() // 현재 액티비티를 종료하여 BackStack에서 제거
     }
 }

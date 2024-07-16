@@ -5,51 +5,56 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.activity.ThreeChoiceActivity">
+    tools:context=".ui.activity.ThreeChoiceActivity"
+    android:background="@drawable/three">
 
     <TextView
         android:id="@+id/choice1Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sign Up"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Loading.."
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.1"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.388"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.268" />
+
     <TextView
         android:id="@+id/choice2Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sign Up"
-        app:layout_constraintTop_toBottomOf="@id/choice1Button"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Loading.."
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.1"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.707"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/choice1Button"
+        app:layout_constraintVertical_bias="0.27" />
+
     <TextView
         android:id="@+id/choice3Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sign Up"
-        app:layout_constraintTop_toBottomOf="@id/choice2Button"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Loading.."
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.1"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.289"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/choice2Button"
+        app:layout_constraintVertical_bias="0.403" />
 
     <Button
         android:id="@+id/next_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="70dp"
         android:text="Next"
-        app:layout_constraintTop_toBottomOf="@id/choice2Button"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="70dp"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.473"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/choice2Button"
+        app:layout_constraintVertical_bias="0.963" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
