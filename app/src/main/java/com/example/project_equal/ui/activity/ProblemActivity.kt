@@ -213,10 +213,6 @@ class ProblemActivity : AppCompatActivity() {
     }
 
     private fun createDraggableItem(operator: Operator) {
-        if (operator is Operator.Equal) {
-            createDraggableItemView("[] = []", operator)
-            return
-        }
         val text = when (operator) {
             is Operator.Addition -> "[] + []"
             is Operator.Subtraction -> "[] - []"
@@ -228,6 +224,7 @@ class ProblemActivity : AppCompatActivity() {
             is Operator.Cube -> "[]^^"
             is Operator.Cbrt -> "cbrt[]"
             is Operator.Colon -> "[] : []"
+            is Operator.Equal -> "[] = []"
             else -> "[]"
         }
         val imgSrcId = when (operator) {
