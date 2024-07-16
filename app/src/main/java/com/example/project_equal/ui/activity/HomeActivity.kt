@@ -150,44 +150,48 @@ class HomeActivity : AppCompatActivity() {
             adapter = ShopItemAdapter(shopItems) { item ->
                 if (userGold >= item.price) {
                     Log.d("INSETSHOP", "ONBUYBUTTONCLICKED,  $userGold, $items")
-                CoroutineScope(Dispatchers.Main).launch {
-                    try {
-                        val accessToken = withContext(Dispatchers.IO) { getAccessToken() }
-                        userGold -= item.price
-                        items.add(item.itemNum)
+                    CoroutineScope(Dispatchers.Main).launch {
+                        try {
+                            val accessToken = withContext(Dispatchers.IO) { getAccessToken() }
+                            userGold -= item.price
+                            items.add(item.itemNum)
 
-                        // UI 업데이트는 Main 스레드에서 수행
-                        Toast.makeText(
-                            this@HomeActivity,
-                            "Purchased ${item.name}",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                            // UI 업데이트는 Main 스레드에서 수행
+                            Toast.makeText(
+                                this@HomeActivity,
+                                "Purchased ${item.name}",
+                                Toast.LENGTH_SHORT
+                            ).show()
 
-                        val playerData = withContext(Dispatchers.IO) { playerManager.getPlayerInfo(user_id, accessToken) }
-                        val updatedPlayerData = playerData.copy(gold = userGold, item = items)
-                        Log.d("HOME ACTIVITY", "${updatedPlayerData.item}")
-                        withContext(Dispatchers.IO) { playerManager.updatePlayerInfo(user_id, updatedPlayerData, accessToken) }
-                        updateUI(updatedPlayerData)
-                    } catch (e: Exception) {
-                        Toast.makeText(
-                            this@HomeActivity,
-                            "Failed to purchase item: ${e.message}",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                            val playerData = withContext(Dispatchers.IO) { playerManager.getPlayerInfo(user_id, accessToken) }
+                            val updatedPlayerData = playerData.copy(gold = userGold, item = items)
+                            Log.d("HOME ACTIVITY", "${updatedPlayerData.item}")
+                            withContext(Dispatchers.IO) { playerManager.updatePlayerInfo(user_id, updatedPlayerData, accessToken) }
+                            updateUI(updatedPlayerData)
+                        } catch (e: Exception) {
+                            Toast.makeText(
+                                this@HomeActivity,
+                                "Failed to purchase item: ${e.message}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
-                }
                 } else {
                     Toast.makeText(this@HomeActivity, "외상은 사양이에요", Toast.LENGTH_SHORT).show()
                 }
             }
         }
 
+        // Inflate custom title layout
+        val customTitleView = layoutInflater.inflate(R.layout.dialog_title, null) as TextView
+
         return AlertDialog.Builder(this)
-            .setTitle("이쿼리들")
+            .setCustomTitle(customTitleView)
             .setView(recyclerView)
-            .setNegativeButton("Close", null)
+            .setNegativeButton("나가기", null)
             .create()
     }
+
 
     private fun showShopDialog() {
         val dialog = BottomSheetDialog(this)
@@ -294,7 +298,7 @@ class HomeActivity : AppCompatActivity() {
         withContext(Dispatchers.Main) {
             userGold = playerData.gold
             userIdTextView.text = playerData.nickname
-            goldTextView.text = "당신의 이꼴력: ${userGold.toString()}"
+            goldTextView.text = "당신의 감자: ${userGold.toString()}"
             highscoreTextView.text = "당신의 최고점수: ${playerData.highscore.toString()}"
             Log.d("PLAYERDATA", "${playerData.item}")
             items = playerData.item.toMutableList()

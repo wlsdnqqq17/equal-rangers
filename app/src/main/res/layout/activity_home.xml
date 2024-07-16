@@ -62,7 +62,7 @@
         android:id = "@+id/gold_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="당신의 이꼴력:0"
+        android:text="당신의 감자:0"
         android:fontFamily="@font/gagujangemedium"
         android:textSize = "24dp"
         app:layout_constraintEnd_toEndOf="parent"
