@@ -439,7 +439,8 @@ class ProblemActivity : AppCompatActivity() {
 
             else if (newExpression.value == 1.0 && newExpression.operator.symbol == "=") {
                 val resultIntent = Intent()
-                resultIntent.putExtra("SCORE", score) // 점수값을 여기에 넣습니다.
+                val data = arrayListOf(score, 10)
+                resultIntent.putIntegerArrayListExtra("SCORE", data) // 점수값을 여기에 넣습니다.
                 setResult(RESULT_OK, resultIntent)
                 finish()
             }

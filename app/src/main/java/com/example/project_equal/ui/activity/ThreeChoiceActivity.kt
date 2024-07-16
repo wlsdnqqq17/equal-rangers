@@ -32,6 +32,7 @@ class ThreeChoiceActivity : AppCompatActivity() {
     lateinit var btn3: TextView
     lateinit var playerManager: PlayerManager
     var score: Int = 0
+    var gold:Int = 0
 
     companion object {
         const val REQUEST_CODE_PROBLEM = 1
@@ -60,7 +61,7 @@ class ThreeChoiceActivity : AppCompatActivity() {
         val nextButton: Button = findViewById(R.id.next_button)
         nextButton.setOnClickListener(){
             val intent = Intent(this, GameResult::class.java)
-            intent.putExtra("PROBLEM_RESULT", score)
+            intent.putIntegerArrayListExtra("PROBLEM_RESULT", arrayListOf(score, gold))
             startActivity(intent)
         }
     }
@@ -159,9 +160,10 @@ class ThreeChoiceActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_PROBLEM && resultCode == RESULT_OK) {
-            val scoreGain = data?.getIntExtra("SCORE", 0) ?: 0
-            score += scoreGain
-            Toast.makeText(this, "Score: $score", Toast.LENGTH_LONG).show()
+            val scoreGain = data?.getIntegerArrayListExtra("SCORE")!!
+            score += scoreGain[0]
+            gold += scoreGain[1]
+            Toast.makeText(this, "Score: $score, Gold:$gold", Toast.LENGTH_LONG).show()
         }
     }
 }

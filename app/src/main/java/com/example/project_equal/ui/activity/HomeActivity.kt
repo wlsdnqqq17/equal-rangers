@@ -10,6 +10,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
@@ -21,6 +23,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.project_equal.R
@@ -55,6 +58,7 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var random: Random
     private lateinit var items : MutableList<Int>
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var handler:Handler
     private var userGold = 0
     val shopItems = listOf(
         ShopItem("하니", 100, R.drawable.plus, 0),
@@ -78,6 +82,9 @@ class HomeActivity : AppCompatActivity() {
         userIdTextView = findViewById(R.id.userid_text)
         goldTextView = findViewById(R.id.gold_text)
         highscoreTextView = findViewById(R.id.highscore)
+
+
+        handler = Handler(Looper.getMainLooper())
 
         sharedPreferences = getSharedPreferences("login_prefs", Context.MODE_PRIVATE)
         val user_id = sharedPreferences.getString("user_id", null)
@@ -288,8 +295,8 @@ class HomeActivity : AppCompatActivity() {
         withContext(Dispatchers.Main) {
             userGold = playerData.gold
             userIdTextView.text = playerData.nickname
-            goldTextView.text = userGold.toString()
-            highscoreTextView.text = playerData.highscore.toString()
+            goldTextView.text = "당신의 이꼴력: ${userGold.toString()}"
+            highscoreTextView.text = "당신의 최고점수: ${playerData.highscore.toString()}"
             Log.d("PLAYERDATA", "${playerData.item}")
             items = playerData.item.toMutableList()
             setAnimation(items)
@@ -536,6 +543,9 @@ class HomeActivity : AppCompatActivity() {
                 val accessToken = getAccessToken()
                 Log.d("IN HOMEACTIVITY", accessToken)
                 getPlayerInfo(user_id!!)
+                withContext(Dispatchers.Main) {
+                    startAnimations() // 데이터 로드 후 애니메이션 시작
+                }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(
@@ -546,6 +556,12 @@ class HomeActivity : AppCompatActivity() {
                     Log.e("HomeActivity", "Error: ${e.message}")
                 }
             }
+        }
+    }
+
+    private fun startAnimations() {
+        lifecycleScope.launch {
+            setAnimation(items)
         }
     }
 }

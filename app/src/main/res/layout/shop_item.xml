@@ -25,6 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Item Name"
+            android:fontFamily="@font/gagujangemedium"
             android:textSize="16sp"
             android:textColor="@android:color/black"
             android:gravity="center_horizontal"
@@ -34,7 +35,8 @@
             android:id="@+id/item_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="100 Gold"
+            android:text="100 이꼴력"
+            android:fontFamily="@font/gagujangemedium"
             android:textSize="14sp"
             android:textColor="@android:color/darker_gray"
             android:gravity="center_horizontal"
@@ -44,7 +46,8 @@
             android:id="@+id/buy_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Buy"
+            android:text="소환하기"
+            android:fontFamily="@font/gagujangemedium"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="8dp" />
 
