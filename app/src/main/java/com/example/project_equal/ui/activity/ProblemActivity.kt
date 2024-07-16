@@ -336,18 +336,22 @@ class ProblemActivity : AppCompatActivity() {
         val operatorTextView = operatorView.getChildAt(1) as? TextView
         val operatorText = operatorTextView!!.text.toString()
         val numberText = inputExpression.string
+        val imageView = operatorView.getChildAt(0) as? ImageView
 
         if (operator.leftExpression == null && inputExpression is Expression.Number)
         {
             val newTextView = TextView(this).apply {
                 this.text = numberText
                 this.id = View.generateViewId()
+                Log.d(TAG, "newTextView: ${this.id}")
                 this.gravity = Gravity.CENTER_VERTICAL
             }
             val textParams = RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT
             ).apply {
+                addRule(RelativeLayout.ALIGN_LEFT, imageView!!.id)
+                addRule(RelativeLayout.ALIGN_TOP, imageView!!.id)
                 leftMargin = 70
                 topMargin = 80
             }
@@ -359,17 +363,23 @@ class ProblemActivity : AppCompatActivity() {
             val newTextView = TextView(this).apply {
                 this.text = numberText
                 this.id = View.generateViewId()
+                Log.d(TAG, "newTextView: ${this.id}")
                 this.gravity = Gravity.CENTER_VERTICAL
             }
             val textParams = RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT
             ).apply {
+                addRule(RelativeLayout.ALIGN_LEFT, imageView!!.id)
+                addRule(RelativeLayout.ALIGN_TOP, imageView!!.id)
                 leftMargin = 370
                 topMargin = 80
             }
 
             operatorView.addView(newTextView, textParams)
+        }
+        else if (inputExpression is Expression && operator.leftExpression == null) {
+            mergeLayouts(operatorView, numberView)
         }
 
         if (operator.leftExpression == null) {
@@ -390,6 +400,34 @@ class ProblemActivity : AppCompatActivity() {
             handleBinaryOperator(operatorView, operator)
         }
     }
+
+    private fun mergeLayouts(operatorView: RelativeLayout, numberView: RelativeLayout) {
+        val childCount = numberView.childCount
+        val children = mutableListOf<View>()
+
+        // numberView의 자식들을 복사
+        for (i in 0 until childCount) {
+            children.add(numberView.getChildAt(i))
+        }
+
+        // 복사한 자식들로 작업
+        for (child in children) {
+            numberView.removeView(child)
+
+            // 기존 LayoutParams를 그대로 사용
+            val layoutParams = child.layoutParams as RelativeLayout.LayoutParams
+
+            // 새로운 자식 뷰인지 확인
+            child.setPadding(child.paddingLeft, child.paddingTop, child.paddingRight + 600, child.paddingBottom)
+
+
+            operatorView.addView(child, layoutParams)
+
+            Log.d(TAG, "Child view moved: ${child.id}")
+        }
+    }
+
+
 
     private fun handleUnaryOperator(operatorView: RelativeLayout, operator: Operator) {
         val newExpression = Expression.UnaryExpression(operator, operator.leftExpression!!)
