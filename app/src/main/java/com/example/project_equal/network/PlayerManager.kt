@@ -51,11 +51,23 @@ class PlayerManager(private val apiService: ApiService, private val context: Con
                 }
 
                 val json = JSONObject(responseBody.string())
+                Log.d("TEST", "BEFORE FAIL")
+
                 val itemJsonArray = json.getJSONArray("item")
+                Log.d("TEST", "NOOOOOOOOOOTTTTTTT FAIL TO PARSE ITEM JSON ARRRAY")
                 val itemList = mutableListOf<Int>()
                 for (i in 0 until itemJsonArray.length()) {
                     itemList.add(itemJsonArray.getInt(i))
                 }
+//                PlayerData(
+//                    userId = json.getString("user_id"),
+//                    nickname = json.getString("nickname"),
+//                    gold = json.getInt("gold"),
+//                    item = itemList,
+//                    highscore = json.getInt("highscore")
+//                )
+
+//                Log.d("TEST", "NOOOOOOOOOOTTTTTTT FAIL TO PARSE ITEM JSON ARRRAY")
                 PlayerData(
                     userId = json.getString("user_id"),
                     nickname = json.getString("nickname"),
@@ -63,6 +75,7 @@ class PlayerManager(private val apiService: ApiService, private val context: Con
                     item = itemList,
                     highscore = json.getInt("highscore")
                 )
+
             } catch (e: IOException) {
                 throw IOException("Failed to fetch player information: ${e.message}", e)
             } catch (e: JSONException) {

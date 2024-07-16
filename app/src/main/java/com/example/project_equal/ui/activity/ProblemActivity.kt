@@ -140,7 +140,7 @@ class ProblemActivity : AppCompatActivity() {
         }
         operatorView.addView(newTextView)
         val imageView = operatorView.getChildAt(0) as? ImageView
-        setTextViewConstraints(operatorView, newTextView, imageView!!,70,80)
+        setTextViewConstraints(operatorView, newTextView, imageView!!,50,60)
 
         val rightText = expr.left.string
         val newTextView2 = TextView(this).apply {
@@ -149,7 +149,7 @@ class ProblemActivity : AppCompatActivity() {
             this.gravity = Gravity.CENTER_VERTICAL
         }
         operatorView.addView(newTextView2)
-        setTextViewConstraints(operatorView, newTextView2, imageView!!,380,80)
+        setTextViewConstraints(operatorView, newTextView2, imageView!!,280,60)
     }
 
 
@@ -479,10 +479,10 @@ class ProblemActivity : AppCompatActivity() {
             }
             operatorView.addView(newTextView)
             if (operator is Operator.Negation || operator is Operator.Sqrt || operator is Operator.Square || operator is Operator.Cube || operator is Operator.Cbrt) {
-                setTextViewConstraints(operatorView, newTextView, imageView!!, 210, 80)
+                setTextViewConstraints(operatorView, newTextView, imageView!!, 180, 60)
             }
             else {
-                setTextViewConstraints(operatorView, newTextView, imageView!!, 70, 80)
+                setTextViewConstraints(operatorView, newTextView, imageView!!, 50, 60)
             }
         } else if (inputExpression is Expression.Number) {
             val newTextView = TextView(this).apply {
@@ -492,7 +492,7 @@ class ProblemActivity : AppCompatActivity() {
                 this.gravity = Gravity.CENTER_VERTICAL
             }
             operatorView.addView(newTextView)
-            setTextViewConstraints(operatorView, newTextView, imageView!!,380,80)
+            setTextViewConstraints(operatorView, newTextView, imageView!!,280,60)
         } else if (operator is Operator.Negation || operator is Operator.Sqrt || operator is Operator.Square || operator is Operator.Cube || operator is Operator.Cbrt){
             val newTextView = TextView(this).apply {
                 this.text = inputExpression.value.toString()
@@ -501,7 +501,7 @@ class ProblemActivity : AppCompatActivity() {
                 this.gravity = Gravity.CENTER_VERTICAL
             }
             operatorView.addView(newTextView)
-            setTextViewConstraints(operatorView, newTextView, imageView!!, 210, 80)
+            setTextViewConstraints(operatorView, newTextView, imageView!!, 180, 80)
 
         } else if (inputExpression is Expression && operator.leftExpression == null) {
             mergeLayouts(operatorView, numberView, 600)
@@ -608,6 +608,8 @@ class ProblemActivity : AppCompatActivity() {
 
     private fun handleEqualExpression() {
         val resultIntent = Intent().apply { putExtra("SCORE", score) }
+        val data = arrayListOf(score, 10)
+        resultIntent.putIntegerArrayListExtra("SCORE", data)
         setResult(RESULT_OK, resultIntent)
         finish()
     }

@@ -1,9 +1,11 @@
 package com.example.project_equal.ui.activity
 
 import PlayerManager
+import android.animation.ValueAnimator
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -26,15 +28,22 @@ class GameResult : AppCompatActivity() {
     private lateinit var userId: String
     private lateinit var accessToken: String
     private var score: Int = 0
-
+    private var gainGold: Int = 0
+    private lateinit var scoreTextView: TextView
+    private lateinit var goldTextView: TextView
     override fun onCreate(savedInstanceState: Bundle?) {
+
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_game_result)
 
         // Intent에서 점수를 가져옴
-        score = intent.getIntExtra("PROBLEM_RESULT", 0)
-
+        val data = intent.getIntegerArrayListExtra("PROBLEM_RESULT")!!
+        score = data[0]
+        gainGold = data[1]
+        score = 100
+        gainGold = 100
         // SharedPreferences에서 userId와 accessToken 가져오기
         val sharedPreferences = getSharedPreferences("login_prefs", Context.MODE_PRIVATE)
         userId = sharedPreferences.getString("user_id", "") ?: ""
@@ -46,7 +55,8 @@ class GameResult : AppCompatActivity() {
             .client(OkHttpClient())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-
+        scoreTextView = findViewById(R.id.scoreTextView)
+        goldTextView = findViewById(R.id.goldTextView)
         // ApiService 인터페이스 구현체 생성
         val apiService = retrofit.create(ApiService::class.java)
 
@@ -54,14 +64,32 @@ class GameResult : AppCompatActivity() {
         playerManager = PlayerManager(apiService, this)
 
         // 플레이어 정보 업데이트
-        updatePlayerHighscore(apiService)
+        updatePlayerinfo(apiService)
+        updateGold(gainGold)
+        animateScore(0, score)
     }
 
-    private fun updatePlayerHighscore(apiService: ApiService) {
+    private fun updateGold(gold: Int) {
+        goldTextView.text = "Gold: $gold"
+    }
+
+    private fun animateScore(startScore: Int, endScore: Int) {
+        val animator = ValueAnimator.ofInt(startScore, endScore)
+        animator.duration = 2000 // 2초 동안 애니메이션
+
+        animator.addUpdateListener { animation ->
+            val animatedValue = animation.animatedValue as Int
+            scoreTextView.text = "Score: $animatedValue"
+        }
+
+        animator.start()
+    }
+
+    private fun updatePlayerinfo(apiService: ApiService) {
         CoroutineScope(Dispatchers.Main).launch {
             try {
                 val playerData = playerManager.getPlayerInfo(userId, accessToken)
-                val updatedPlayerData = playerData.copy(highscore = score)
+                val updatedPlayerData = playerData.copy(highscore = score, gold = playerData.gold + gainGold)
                 val response = playerManager.updatePlayerInfo(userId, updatedPlayerData, accessToken)
 
                 withContext(Dispatchers.Main) {
