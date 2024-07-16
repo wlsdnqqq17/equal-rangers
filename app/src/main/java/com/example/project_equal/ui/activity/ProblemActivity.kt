@@ -95,8 +95,64 @@ class ProblemActivity : AppCompatActivity() {
 
 
     private fun createDraggableExpr(expr: Expression) {
-        createDraggableItemView(expr.string, expr)
+        if (expr is Expression.BinaryExpression) {
+            createDraggableBinaryExpr(expr)
+        } else {
+            createDraggableItemView(expr.string, expr)
+        }
     }
+
+    private fun createDraggableBinaryExpr(expr: Expression.BinaryExpression) {
+        val operator = expr.operator
+        val text = when (operator) {
+            is Operator.Addition -> "[] + []"
+            is Operator.Subtraction -> "[] - []"
+            is Operator.Multiplication -> "[] * []"
+            is Operator.Division -> "[] / []"
+            is Operator.Negation -> "-[]"
+            is Operator.Sqrt -> "sqrt[]"
+            is Operator.Square -> "[]^"
+            is Operator.Cube -> "[]^^"
+            is Operator.Cbrt -> "cbrt[]"
+            is Operator.Colon -> "[] : []"
+            else -> "[]"
+        }
+        val imgSrcId = when (operator) {
+            is Operator.Addition -> R.drawable.explus
+            is Operator.Subtraction -> R.drawable.exminus
+            is Operator.Multiplication -> R.drawable.exmultiply
+            is Operator.Division -> R.drawable.exdivide
+            is Operator.Negation -> R.drawable.exnegation
+            is Operator.Sqrt -> R.drawable.exroot2
+            is Operator.Square -> R.drawable.expower2
+            is Operator.Cube -> R.drawable.expower3
+            is Operator.Cbrt -> R.drawable.exroot3
+            is Operator.Colon -> R.drawable.excolon
+            is Operator.Equal -> R.drawable.exequal
+            else -> R.drawable.number
+        }
+        val operatorView = createDraggableItemView(text, expr, imgSrcId)
+        val leftText = expr.left.string
+        val newTextView = TextView(this).apply {
+            this.text = leftText
+            this.id = View.generateViewId()
+            this.gravity = Gravity.CENTER_VERTICAL
+        }
+        operatorView.addView(newTextView)
+        val imageView = operatorView.getChildAt(0) as? ImageView
+        setTextViewConstraints(operatorView, newTextView, imageView!!,70,80)
+
+        val rightText = expr.left.string
+        val newTextView2 = TextView(this).apply {
+            this.text = leftText
+            this.id = View.generateViewId()
+            this.gravity = Gravity.CENTER_VERTICAL
+        }
+        operatorView.addView(newTextView2)
+        setTextViewConstraints(operatorView, newTextView2, imageView!!,380,80)
+    }
+
+
 
     private fun createDraggableEqual(operator: Operator) {
         createDraggableItemView("[] = []", operator, R.drawable.exequal)
@@ -191,7 +247,7 @@ class ProblemActivity : AppCompatActivity() {
         createDraggableItemView(text, operator, imgSrcId)
     }
 
-    private fun createDraggableItemView(text: String, tag: Any, imageResId: Int = R.drawable.number) {
+    private fun createDraggableItemView(text: String, tag: Any, imageResId: Int = R.drawable.number): ConstraintLayout {
 
         val draggableItemLayout = ConstraintLayout(this).apply {
             this.tag = tag
@@ -248,6 +304,8 @@ class ProblemActivity : AppCompatActivity() {
         }
 
         addItemToLayout(draggableItemLayout)
+
+        return draggableItemLayout
     }
 
     private fun addItemToLayout(draggableItem: View) {
