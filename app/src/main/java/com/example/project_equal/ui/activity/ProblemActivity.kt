@@ -83,7 +83,7 @@ class ProblemActivity : AppCompatActivity() {
     }
 
     private fun createDraggableEqual(operator: Operator) {
-        createDraggableItemView("[] = []", operator)
+        createDraggableItemView("[] = []", operator, R.drawable.exequal)
     }
 
     private fun createDraggableNumber(number: Int) {
@@ -109,15 +109,15 @@ class ProblemActivity : AppCompatActivity() {
         }
         val imgSrcId = when (operator) {
             is Operator.Addition -> R.drawable.explus
-            is Operator.Subtraction -> R.drawable.minusbutton
-            is Operator.Multiplication -> R.drawable.multiplybutton
-            is Operator.Division -> R.drawable.dividebutton
-            is Operator.Negation -> R.drawable.minusbutton
-            is Operator.Sqrt -> R.drawable.root2button
-            is Operator.Square -> R.drawable.power2button
-            is Operator.Cube -> R.drawable.power3button
-            is Operator.Cbrt -> R.drawable.root3button
-            is Operator.Equal -> R.drawable.equalbutton
+            is Operator.Subtraction -> R.drawable.exminus
+            is Operator.Multiplication -> R.drawable.exmultiply
+            is Operator.Division -> R.drawable.exdivide
+            is Operator.Negation -> R.drawable.exminus
+            is Operator.Sqrt -> R.drawable.exroot2
+            is Operator.Square -> R.drawable.expower2
+            is Operator.Cube -> R.drawable.expower3
+            is Operator.Cbrt -> R.drawable.exroot3
+            is Operator.Equal -> R.drawable.exequal
             else -> R.drawable.number
         }
         createDraggableItemView(text, operator, imgSrcId)
@@ -348,45 +348,30 @@ class ProblemActivity : AppCompatActivity() {
         val numberText = inputExpression.string
         val imageView = operatorView.getChildAt(0) as? ImageView
 
-        if (operator.leftExpression == null && inputExpression is Expression.Number)
-        {
+        if (operator.leftExpression == null && inputExpression is Expression.Number ) {
             val newTextView = TextView(this).apply {
                 this.text = numberText
                 this.id = View.generateViewId()
                 Log.d(TAG, "newTextView: ${this.id}")
                 this.gravity = Gravity.CENTER_VERTICAL
             }
-            val textParams = ConstraintLayout.LayoutParams(
-                ConstraintLayout.LayoutParams.WRAP_CONTENT,
-                ConstraintLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                leftMargin = 70
-                topMargin = 80
+            operatorView.addView(newTextView)
+            if (operator is Operator.Negation || operator is Operator.Sqrt || operator is Operator.Square || operator is Operator.Cube || operator is Operator.Cbrt) {
+                setTextViewConstraints(operatorView, newTextView, imageView!!, 220, 80)
             }
-
-            operatorView.addView(newTextView, textParams)
-        }
-        else if (inputExpression is Expression.Number)
-        {
+            else {
+                setTextViewConstraints(operatorView, newTextView, imageView!!, 50, 80)
+            }
+        } else if (inputExpression is Expression.Number) {
             val newTextView = TextView(this).apply {
                 this.text = numberText
                 this.id = View.generateViewId()
                 Log.d(TAG, "newTextView: ${this.id}")
                 this.gravity = Gravity.CENTER_VERTICAL
             }
-            val textParams = ConstraintLayout.LayoutParams(
-                ConstraintLayout.LayoutParams.WRAP_CONTENT,
-                ConstraintLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                //addRule(RelativeLayout.ALIGN_LEFT, imageView!!.id)
-                //addRule(RelativeLayout.ALIGN_TOP, imageView!!.id)
-                leftMargin = 370
-                topMargin = 80
-            }
-
-            operatorView.addView(newTextView, textParams)
-        }
-        else if (inputExpression is Expression && operator.leftExpression == null) {
+            operatorView.addView(newTextView)
+            setTextViewConstraints(operatorView, newTextView, imageView!!,350,80)
+        } else if (inputExpression is Expression && operator.leftExpression == null) {
             mergeLayouts(operatorView, numberView)
         }
 
@@ -401,13 +386,21 @@ class ProblemActivity : AppCompatActivity() {
         operatorTextView.text = updatedText
         numberView.visibility = View.GONE
 
-
         if (operator is Operator.Negation || operator is Operator.Sqrt || operator is Operator.Square || operator is Operator.Cube || operator is Operator.Cbrt) {
             handleUnaryOperator(operatorView, operator)
         } else if (operator.leftExpression != null && operator.rightExpression != null) {
             handleBinaryOperator(operatorView, operator)
         }
     }
+
+    private fun setTextViewConstraints(layout: ConstraintLayout, textView: TextView, imageView: ImageView, marginStart: Int, marginTop: Int) {
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(layout)
+        constraintSet.connect(textView.id, ConstraintSet.START, imageView.id, ConstraintSet.START, marginStart)
+        constraintSet.connect(textView.id, ConstraintSet.TOP, imageView.id, ConstraintSet.TOP, marginTop)
+        constraintSet.applyTo(layout)
+    }
+
 
     private fun mergeLayouts(operatorView: ConstraintLayout, numberView: ConstraintLayout) {
         val childCount = numberView.childCount

@@ -137,6 +137,7 @@ class PlayerManager(private val apiService: ApiService, private val context: Con
                 json.put("nickname", playerData.nickname)
                 json.put("gold", playerData.gold)
                 json.put("highscore", playerData.highscore)
+                json.put("item", playerData.item)
                 // Add other fields as needed
 
                 val mediaType = "application/json; charset=utf-8".toMediaType()
