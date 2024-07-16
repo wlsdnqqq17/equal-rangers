@@ -3,17 +3,14 @@ package com.example.project_equal.ui.activity
 import android.content.ClipData
 import android.content.ClipDescription
 import android.content.Intent
-import android.graphics.Rect
-import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.DragEvent
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
-import android.widget.LinearLayout
+import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -21,7 +18,6 @@ import com.example.project_equal.Expression
 import com.example.project_equal.Operator
 import com.example.project_equal.R
 import com.example.project_equal.getOperator
-import com.google.android.material.button.MaterialButton
 
 class ProblemActivity : AppCompatActivity() {
 
@@ -114,41 +110,56 @@ class ProblemActivity : AppCompatActivity() {
     }
 
     private fun createDraggableItemView(text: String, tag: Any) {
-        // RelativeLayout을 생성하여 Button을 포함
-        val draggableItemLayout = RelativeLayout(this)
 
-        // Button 생성
-        val draggableItem = Button(this).apply {
-            this.text = text
+        val draggableItemLayout = RelativeLayout(this).apply {
             this.tag = tag
-            setOnTouchListener { view, event ->
-                if (event.action == MotionEvent.ACTION_DOWN) {
-                    val clipText = this.text
-                    val item = ClipData.Item(clipText)
-                    val mimeTypes = arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN)
-                    val dragData = ClipData(clipText, mimeTypes, item)
-                    val dragShadow = View.DragShadowBuilder(view)
-                    view.startDragAndDrop(dragData, dragShadow, view, 0)
-                    view.visibility = View.INVISIBLE
-                    true
-                } else {
-                    false
-                }
-            }
+        }
+        val imageResId = R.drawable.plus
+
+        val imageView = ImageView(this).apply {
+            setImageResource(imageResId)
+            id = View.generateViewId() // ID를 설정합니다.
         }
 
-        // LayoutParams 설정
-        val params = RelativeLayout.LayoutParams(
+
+        val textView = TextView(this).apply {
+            this.text = text
+            id = View.generateViewId() // ID를 설정합니다.
+        }
+
+        val imageParams = RelativeLayout.LayoutParams(
             RelativeLayout.LayoutParams.WRAP_CONTENT,
             RelativeLayout.LayoutParams.WRAP_CONTENT
         ).apply {
-            addRule(RelativeLayout.CENTER_IN_PARENT)
+            addRule(RelativeLayout.CENTER_HORIZONTAL)
         }
 
-        // RelativeLayout에 Button 추가
-        draggableItemLayout.addView(draggableItem, params)
+        val textParams = RelativeLayout.LayoutParams(
+            RelativeLayout.LayoutParams.WRAP_CONTENT,
+            RelativeLayout.LayoutParams.WRAP_CONTENT
+        ).apply {
+            addRule(RelativeLayout.BELOW, imageView.id)
+            addRule(RelativeLayout.CENTER_HORIZONTAL)
+        }
 
-        // 부모 레이아웃에 draggableItemLayout 추가
+        draggableItemLayout.addView(imageView, imageParams)
+        draggableItemLayout.addView(textView, textParams)
+
+        draggableItemLayout.setOnTouchListener { view, event ->
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                val clipText = text
+                val item = ClipData.Item(clipText)
+                val mimeTypes = arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN)
+                val dragData = ClipData(clipText, mimeTypes, item)
+                val dragShadow = View.DragShadowBuilder(view)
+                view.startDragAndDrop(dragData, dragShadow, view, 0)
+                view.visibility = View.INVISIBLE
+                true
+            } else {
+                false
+            }
+        }
+
         addItemToLayout(draggableItemLayout)
     }
 
@@ -167,50 +178,6 @@ class ProblemActivity : AppCompatActivity() {
 
 
 
-    private fun findEmptySpaceForNewItem(layout: RelativeLayout, newItem: View): Pair<Int, Int> {
-        val occupiedSpaces = mutableListOf<Rect>()
-        for (i in 0 until layout.childCount) {
-            val child = layout.getChildAt(i)
-            if (child.visibility == View.VISIBLE) {
-                val location = IntArray(2)
-                child.getLocationOnScreen(location)
-                val rect = Rect(location[0], location[1], location[0] + child.width, location[1] + child.height)
-                occupiedSpaces.add(rect)
-            }
-        }
-
-        val newItemWidth = 200 // newItem.layoutParams.width
-        val newItemHeight = 200 // newItem.layoutParams.height
-
-        val screenWidth = layout.width
-        val screenHeight = layout.height
-
-        for (y in 0 until screenHeight step newItemHeight + 16) {
-            for (x in 0 until screenWidth step newItemWidth + 16) {
-                val newItemRect = Rect(x, y, x + newItemWidth, y + newItemHeight)
-                if (occupiedSpaces.none { Rect.intersects(it, newItemRect) }) {
-                    return Pair(x, y)
-                }
-            }
-        }
-
-        return Pair(0, 0)
-    }
-
-
-
-    private fun addItemToLayout(draggableItem: TextView) {
-        val layout = findViewById<RelativeLayout>(R.id.root_layout)
-        layout.post {
-            val params = RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT
-            )
-            params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE)
-            layout.addView(draggableItem, params)
-            Log.d(TAG, "Draggable item created: ${draggableItem.text}")
-        }
-    }
 
     private fun addScoreForOperator(operator: String) {
         score += when (operator) {
@@ -240,7 +207,60 @@ class ProblemActivity : AppCompatActivity() {
             DragEvent.ACTION_DRAG_ENTERED -> true
             DragEvent.ACTION_DRAG_LOCATION -> true
             DragEvent.ACTION_DRAG_EXITED -> true
-            DragEvent.ACTION_DROP -> handleDropEvent(event)
+            DragEvent.ACTION_DROP ->
+                {
+                val draggedView = event.localState as View
+                val owner = draggedView.parent as ViewGroup
+                owner.removeView(draggedView)
+
+                val x = event.x.toInt()
+                val y = event.y.toInt()
+
+                val deleteButtonLocation = IntArray(2)
+                deleteButton.getLocationOnScreen(deleteButtonLocation)
+                val deleteButtonX = deleteButtonLocation[0]
+                val deleteButtonY = deleteButtonLocation[1]
+                val deleteButtonWidth = deleteButton.width
+                val deleteButtonHeight = deleteButton.height
+                val draggedViewTag = draggedView.tag
+
+
+                val disasamButtonLocation = IntArray(2)
+                disasamButton.getLocationOnScreen(disasamButtonLocation)
+                val disasamButtonX = disasamButtonLocation[0]
+                val disasamButtonY = disasamButtonLocation[1]
+                val disasamButtonWidth = disasamButton.width
+                val disasamButtonHeight = disasamButton.height
+
+                if (x >= disasamButtonX && x <= disasamButtonX + disasamButtonWidth &&
+                    y >= disasamButtonY && y <= disasamButtonY + disasamButtonHeight && draggedViewTag is Operator && draggedViewTag.leftExpression != null) {
+
+                    createDraggableExpr(draggedViewTag.leftExpression!!)
+                    draggedViewTag.leftExpression = null
+                    createDraggableItem(draggedViewTag)
+                }
+                else if ( x >= disasamButtonX && x <= disasamButtonX + disasamButtonWidth &&
+                    y >= disasamButtonY && y <= disasamButtonY + disasamButtonHeight && draggedViewTag is Expression && draggedViewTag.string.length != 1 ) {
+
+                    if (draggedViewTag is Expression.BinaryExpression) {
+                        createDraggableExpr(draggedViewTag.left)
+                        createDraggableExpr(draggedViewTag.right)
+                    } else if (draggedViewTag is Expression.UnaryExpression) {
+                        createDraggableExpr(draggedViewTag.expr)
+                    }
+                    subtractScoreForOperator(draggedViewTag.symbol)
+                    resultTextView.text = "${score}"
+                    createDraggableItem(getOperator(draggedViewTag.symbol)!!)
+
+                }
+
+                else if (x >= deleteButtonX && x <= deleteButtonX + deleteButtonWidth &&
+                    y >= deleteButtonY && y <= deleteButtonY + deleteButtonHeight && draggedViewTag is Operator && draggedViewTag.leftExpression == null) {
+                } else {
+                    handleRegularDrop(draggedView, x, y, event)
+                    }
+                true
+            }
             DragEvent.ACTION_DRAG_ENDED -> {
                 if (!event.result) {
                     val draggedView = event.localState as View
@@ -291,10 +311,15 @@ class ProblemActivity : AppCompatActivity() {
 
     private fun handleDeleteButtonDrop(draggedView: View) {
         val draggedViewTag = draggedView.tag
-        if (draggedViewTag is Operator && draggedViewTag.leftExpression == null) {
-            // Handle the delete button drop
+        Log.d(TAG, "Dragged view tag: $draggedViewTag")
+
+        if (false) {
+            (draggedView.parent as ViewGroup).removeView(draggedView)
+            Log.d(TAG, "View deleted")
         }
     }
+
+
 
     private fun handleDisassembleButtonDrop(draggedView: View) {
         val draggedViewTag = draggedView.tag
@@ -323,9 +348,8 @@ class ProblemActivity : AppCompatActivity() {
     private fun handleRegularDrop(draggedView: View, x: Int, y: Int, event: DragEvent) {
         val layout = findViewById<RelativeLayout>(R.id.root_layout)  // Correct parent layout
         val overlappingView = findOverlappingView(x, y, draggedView, layout)
-
-        if (overlappingView != null && overlappingView is TextView && isOperator(overlappingView)) {
-            updateOperatorView(overlappingView, draggedView as TextView)
+        if (overlappingView != null && overlappingView is RelativeLayout && isOperator(overlappingView.tag)) {
+            updateOperatorView(overlappingView, draggedView as RelativeLayout)
         } else {
             val params = RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
@@ -357,11 +381,11 @@ class ProblemActivity : AppCompatActivity() {
         return null
     }
 
-    private fun isOperator(view: TextView): Boolean {
-        return view.tag is Operator
+    private fun isOperator(tag: Any): Boolean {
+        return  tag is Operator
     }
 
-    private fun updateOperatorView(operatorView: TextView, numberView: TextView) {
+    private fun updateOperatorView(operatorView: RelativeLayout, numberView: RelativeLayout) {
         val operator = operatorView.tag as? Operator ?: return
         val inputExpression = numberView.tag as? Expression ?: return
         Log.d(TAG, "inputExpression: $inputExpression")
@@ -372,16 +396,17 @@ class ProblemActivity : AppCompatActivity() {
             operator.rightExpression = inputExpression
         }
 
-        val operatorText = operatorView.text.toString()
+        val operatorTextView = operatorView.getChildAt(1) as? TextView
+        val operatorText = operatorTextView!!.text.toString()
         val numberText = inputExpression.string
 
         val updatedText = operatorText.replaceFirst("[]", numberText)
 
-        operatorView.text = updatedText
+        operatorTextView.text = updatedText
         numberView.visibility = View.GONE
 
         if (operator is Operator.Negation || operator is Operator.Sqrt || operator is Operator.Square || operator is Operator.Cube || operator is Operator.Cbrt) {
-            handleUnaryOperator(operatorView, operator)
+            //handleUnaryOperator(operatorView, operator)
         } else if (operator.leftExpression != null && operator.rightExpression != null) {
             handleBinaryOperator(operatorView, operator)
         }
@@ -398,7 +423,7 @@ class ProblemActivity : AppCompatActivity() {
         operator.rightExpression = null
     }
 
-    private fun handleBinaryOperator(operatorView: TextView, operator: Operator) {
+    private fun handleBinaryOperator(operatorView: RelativeLayout, operator: Operator) {
         val newExpression = Expression.BinaryExpression(operator.leftExpression!!, operator, operator.rightExpression!!)
         val filteredText = newExpression.string.filterNot { it in "+-*/= sqrtcbrt^^".toList() }
         val isContained = problemNumber.contains(filteredText)
@@ -414,12 +439,13 @@ class ProblemActivity : AppCompatActivity() {
         }
     }
 
-    private fun resetOperatorView(operator: Operator, operatorView: TextView) {
+    private fun resetOperatorView(operator: Operator, operatorView: RelativeLayout) {
         createDraggableExpr(operator.leftExpression!!)
         createDraggableExpr(operator.rightExpression!!)
         operator.leftExpression = null
         operator.rightExpression = null
-        operatorView.text = "[] ${operator.symbol} []"
+        val operatorTextView = operatorView.getChildAt(1) as? TextView
+        operatorTextView!!.text = "[] ${operator.symbol} []"
         createDraggableItem(operator)
         (operatorView.parent as ViewGroup).removeView(operatorView)
     }
@@ -430,14 +456,12 @@ class ProblemActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun finalizeOperatorView(operatorView: TextView, newExpression: Expression.BinaryExpression) {
+    private fun finalizeOperatorView(operatorView: RelativeLayout, newExpression: Expression.BinaryExpression) {
         val operator = newExpression.operator // Extract the operator from newExpression
         addScoreForOperator(operator.symbol)
         operatorView.tag = newExpression
         resultTextView.text = "$score"
         resultTextView.append("\n${newExpression.value}, (${newExpression.string})") // Append the result instead of replacing the score
-        Log.d(TAG, "Updated operator view: ${operatorView.text}")
-        Log.d(TAG, "Expression created: ${newExpression.value} (${newExpression.string})")
         operator.leftExpression = null
         operator.rightExpression = null
     }
