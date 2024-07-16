@@ -12,9 +12,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import com.example.project_equal.Expression
 import com.example.project_equal.Operator
 import com.example.project_equal.R
@@ -66,7 +67,7 @@ class ProblemActivity : AppCompatActivity() {
         }
 
         findViewById<ImageButton>(R.id.equal_button).setOnClickListener { createDraggableEqual(Operator.Equal()) }
-        findViewById<RelativeLayout>(R.id.root_layout).setOnDragListener(dragListener)
+        findViewById<ConstraintLayout>(R.id.root_layout).setOnDragListener(dragListener)
     }
 
     private fun createDraggableNumbersFromProblem(problem: String) {
@@ -124,8 +125,9 @@ class ProblemActivity : AppCompatActivity() {
 
     private fun createDraggableItemView(text: String, tag: Any, imageResId: Int = R.drawable.number) {
 
-        val draggableItemLayout = RelativeLayout(this).apply {
+        val draggableItemLayout = ConstraintLayout(this).apply {
             this.tag = tag
+            this.id = View.generateViewId()
         }
 
         val imageView = ImageView(this).apply {
@@ -144,24 +146,23 @@ class ProblemActivity : AppCompatActivity() {
             }
         }
 
-        val imageParams = RelativeLayout.LayoutParams(
-            RelativeLayout.LayoutParams.WRAP_CONTENT,
-            RelativeLayout.LayoutParams.WRAP_CONTENT
-        ).apply {
-            addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE)
-        }
+        draggableItemLayout.addView(imageView, ConstraintLayout.LayoutParams(
+            ConstraintLayout.LayoutParams.WRAP_CONTENT,
+            ConstraintLayout.LayoutParams.WRAP_CONTENT).apply {
+            endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
+            startToStart = ConstraintLayout.LayoutParams.PARENT_ID
+            topToTop = ConstraintLayout.LayoutParams.PARENT_ID
+            bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
+        })
 
-        val textParams = RelativeLayout.LayoutParams(
-            RelativeLayout.LayoutParams.WRAP_CONTENT,
-            RelativeLayout.LayoutParams.WRAP_CONTENT
-        ).apply {
-            addRule(RelativeLayout.CENTER_HORIZONTAL, imageView.id)
-            addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE)
-        }
-
-
-        draggableItemLayout.addView(imageView, imageParams)
-        draggableItemLayout.addView(textView, textParams)
+        draggableItemLayout.addView(textView, ConstraintLayout.LayoutParams(
+            ConstraintLayout.LayoutParams.WRAP_CONTENT,
+            ConstraintLayout.LayoutParams.WRAP_CONTENT).apply {
+            endToEnd = imageView.id
+            startToStart = imageView.id
+            topToTop = imageView.id
+            bottomToBottom = imageView.id
+        })
 
         draggableItemLayout.setOnTouchListener { view, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
@@ -182,13 +183,13 @@ class ProblemActivity : AppCompatActivity() {
     }
 
     private fun addItemToLayout(draggableItem: View) {
-        val layout = findViewById<RelativeLayout>(R.id.root_layout)
+        val layout = findViewById<ConstraintLayout>(R.id.root_layout)
         layout.post {
-            val params = RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT
+            val params = ConstraintLayout.LayoutParams(
+                ConstraintLayout.LayoutParams.WRAP_CONTENT,
+                ConstraintLayout.LayoutParams.WRAP_CONTENT
             ).apply {
-                addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE)
+                //addRule(ConstraintLayout.CENTER_IN_PARENT, ConstraintLayout.TRUE)
             }
             layout.addView(draggableItem, params)
             Log.d("ProblemActivity", "Draggable item created")
@@ -224,8 +225,7 @@ class ProblemActivity : AppCompatActivity() {
             DragEvent.ACTION_DRAG_ENTERED -> true
             DragEvent.ACTION_DRAG_LOCATION -> true
             DragEvent.ACTION_DRAG_EXITED -> true
-            DragEvent.ACTION_DROP ->
-                {
+            DragEvent.ACTION_DROP -> {
                 val draggedView = event.localState as View
                 val owner = draggedView.parent as ViewGroup
                 owner.removeView(draggedView)
@@ -241,7 +241,6 @@ class ProblemActivity : AppCompatActivity() {
                 val deleteButtonHeight = deleteButton.height
                 val draggedViewTag = draggedView.tag
 
-
                 val disasamButtonLocation = IntArray(2)
                 disasamButton.getLocationOnScreen(disasamButtonLocation)
                 val disasamButtonX = disasamButtonLocation[0]
@@ -255,9 +254,8 @@ class ProblemActivity : AppCompatActivity() {
                     createDraggableExpr(draggedViewTag.leftExpression!!)
                     draggedViewTag.leftExpression = null
                     createDraggableItem(draggedViewTag)
-                }
-                else if ( x >= disasamButtonX && x <= disasamButtonX + disasamButtonWidth &&
-                    y >= disasamButtonY && y <= disasamButtonY + disasamButtonHeight && draggedViewTag is Expression && draggedViewTag.string.length != 1 ) {
+                } else if (x >= disasamButtonX && x <= disasamButtonX + disasamButtonWidth &&
+                    y >= disasamButtonY && y <= disasamButtonY + disasamButtonHeight && draggedViewTag is Expression && draggedViewTag.string.length != 1) {
 
                     if (draggedViewTag is Expression.BinaryExpression) {
                         createDraggableExpr(draggedViewTag.left)
@@ -269,13 +267,11 @@ class ProblemActivity : AppCompatActivity() {
                     resultTextView.text = "${score}"
                     createDraggableItem(getOperator(draggedViewTag.symbol)!!)
 
-                }
-
-                else if (x >= deleteButtonX && x <= deleteButtonX + deleteButtonWidth &&
+                } else if (x >= deleteButtonX && x <= deleteButtonX + deleteButtonWidth &&
                     y >= deleteButtonY && y <= deleteButtonY + deleteButtonHeight && draggedViewTag is Operator && draggedViewTag.leftExpression == null) {
                 } else {
                     handleRegularDrop(draggedView, x, y, event)
-                    }
+                }
                 true
             }
             DragEvent.ACTION_DRAG_ENDED -> {
@@ -290,22 +286,36 @@ class ProblemActivity : AppCompatActivity() {
     }
 
     private fun handleRegularDrop(draggedView: View, x: Int, y: Int, event: DragEvent) {
-        val layout = findViewById<RelativeLayout>(R.id.root_layout)  // Correct parent layout
+        val layout = findViewById<ConstraintLayout>(R.id.root_layout)
         val overlappingView = findOverlappingView(x, y, draggedView, layout)
-        if (overlappingView != null && overlappingView is RelativeLayout && isOperator(overlappingView.tag)) {
-            updateOperatorView(overlappingView, draggedView as RelativeLayout)
+        if (overlappingView != null && overlappingView is ConstraintLayout && isOperator(overlappingView.tag)) {
+            updateOperatorView(overlappingView, draggedView as ConstraintLayout)
         } else {
-            val params = RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT
-            )
-            params.leftMargin = x - (draggedView.width / 2)
-            params.topMargin = y - (draggedView.height / 2)
-            layout.addView(draggedView, params)  // Add to correct parent layout
+            // 새로운 ID를 생성합니다.
+            if (draggedView.id == View.NO_ID) {
+                draggedView.id = View.generateViewId()
+            }
+
+            // 드래거블 아이템을 ConstraintLayout에 추가합니다.
+            layout.addView(draggedView)
+
+            // 기존의 ConstraintSet을 가져옵니다.
+            val set = ConstraintSet()
+            set.clone(layout)
+
+            // 드래거블 아이템의 위치를 설정합니다.
+            set.connect(draggedView.id, ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, x - (draggedView.width / 2))
+            set.connect(draggedView.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, y - (draggedView.height / 2))
+
+            // ConstraintSet을 적용합니다.
+            set.applyTo(layout)
+
+            // 드래거블 아이템의 가시성을 VISIBLE로 설정합니다.
             draggedView.visibility = View.VISIBLE
             Log.d(TAG, "View dropped at x: $x, y: $y")
         }
     }
+
 
     private fun findOverlappingView(x: Int, y: Int, draggedView: View, parent: ViewGroup): View? {
         for (i in 0 until parent.childCount) {
@@ -328,7 +338,7 @@ class ProblemActivity : AppCompatActivity() {
         return  tag is Operator
     }
 
-    private fun updateOperatorView(operatorView: RelativeLayout, numberView: RelativeLayout) {
+    private fun updateOperatorView(operatorView: ConstraintLayout, numberView: ConstraintLayout) {
         val operator = operatorView.tag as? Operator ?: return
         val inputExpression = numberView.tag as? Expression ?: return
         Log.d(TAG, "inputExpression: $inputExpression")
@@ -346,12 +356,10 @@ class ProblemActivity : AppCompatActivity() {
                 Log.d(TAG, "newTextView: ${this.id}")
                 this.gravity = Gravity.CENTER_VERTICAL
             }
-            val textParams = RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT
+            val textParams = ConstraintLayout.LayoutParams(
+                ConstraintLayout.LayoutParams.WRAP_CONTENT,
+                ConstraintLayout.LayoutParams.WRAP_CONTENT
             ).apply {
-                addRule(RelativeLayout.ALIGN_LEFT, imageView!!.id)
-                addRule(RelativeLayout.ALIGN_TOP, imageView!!.id)
                 leftMargin = 70
                 topMargin = 80
             }
@@ -366,12 +374,12 @@ class ProblemActivity : AppCompatActivity() {
                 Log.d(TAG, "newTextView: ${this.id}")
                 this.gravity = Gravity.CENTER_VERTICAL
             }
-            val textParams = RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT
+            val textParams = ConstraintLayout.LayoutParams(
+                ConstraintLayout.LayoutParams.WRAP_CONTENT,
+                ConstraintLayout.LayoutParams.WRAP_CONTENT
             ).apply {
-                addRule(RelativeLayout.ALIGN_LEFT, imageView!!.id)
-                addRule(RelativeLayout.ALIGN_TOP, imageView!!.id)
+                //addRule(RelativeLayout.ALIGN_LEFT, imageView!!.id)
+                //addRule(RelativeLayout.ALIGN_TOP, imageView!!.id)
                 leftMargin = 370
                 topMargin = 80
             }
@@ -401,7 +409,7 @@ class ProblemActivity : AppCompatActivity() {
         }
     }
 
-    private fun mergeLayouts(operatorView: RelativeLayout, numberView: RelativeLayout) {
+    private fun mergeLayouts(operatorView: ConstraintLayout, numberView: ConstraintLayout) {
         val childCount = numberView.childCount
         val children = mutableListOf<View>()
 
@@ -415,7 +423,7 @@ class ProblemActivity : AppCompatActivity() {
             numberView.removeView(child)
 
             // 기존 LayoutParams를 그대로 사용
-            val layoutParams = child.layoutParams as RelativeLayout.LayoutParams
+            val layoutParams = child.layoutParams as ConstraintLayout.LayoutParams
 
             // 새로운 자식 뷰인지 확인
             child.setPadding(child.paddingLeft, child.paddingTop, child.paddingRight + 600, child.paddingBottom)
@@ -429,7 +437,7 @@ class ProblemActivity : AppCompatActivity() {
 
 
 
-    private fun handleUnaryOperator(operatorView: RelativeLayout, operator: Operator) {
+    private fun handleUnaryOperator(operatorView: ConstraintLayout, operator: Operator) {
         val newExpression = Expression.UnaryExpression(operator, operator.leftExpression!!)
         addScoreForOperator(operator.symbol)
         operatorView.tag = newExpression
@@ -438,7 +446,7 @@ class ProblemActivity : AppCompatActivity() {
         operator.rightExpression = null
     }
 
-    private fun handleBinaryOperator(operatorView: RelativeLayout, operator: Operator) {
+    private fun handleBinaryOperator(operatorView: ConstraintLayout, operator: Operator) {
         val newExpression = Expression.BinaryExpression(operator.leftExpression!!, operator, operator.rightExpression!!)
         val filteredText = newExpression.string.filterNot { it in "+-*/= sqrtcbrt^^".toList() }
         val isContained = problemNumber.contains(filteredText)
@@ -454,7 +462,7 @@ class ProblemActivity : AppCompatActivity() {
         }
     }
 
-    private fun resetOperatorView(operator: Operator, operatorView: RelativeLayout) {
+    private fun resetOperatorView(operator: Operator, operatorView: ConstraintLayout) {
         createDraggableExpr(operator.leftExpression!!)
         createDraggableExpr(operator.rightExpression!!)
         operator.leftExpression = null
@@ -471,7 +479,7 @@ class ProblemActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun finalizeOperatorView(operatorView: RelativeLayout, newExpression: Expression.BinaryExpression) {
+    private fun finalizeOperatorView(operatorView: ConstraintLayout, newExpression: Expression.BinaryExpression) {
         val operator = newExpression.operator // Extract the operator from newExpression
         addScoreForOperator(operator.symbol)
         operatorView.tag = newExpression
