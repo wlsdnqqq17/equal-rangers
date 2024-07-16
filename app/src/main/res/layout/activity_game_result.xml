@@ -22,7 +22,7 @@
         android:id="@+id/goldTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="얻은 골드: 0"
+        android:text="얻은 감자: 0"
         android:textSize="50sp"
         android:fontFamily="@font/gagujangebold"
         android:layout_centerHorizontal="true"
