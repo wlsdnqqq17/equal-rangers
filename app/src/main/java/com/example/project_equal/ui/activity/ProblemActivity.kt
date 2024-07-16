@@ -26,9 +26,9 @@ class ProblemActivity : AppCompatActivity() {
     private val TAG = "ProblemActivity"
     private lateinit var deleteButton: ImageButton
     private lateinit var disasamButton: ImageButton
-    private lateinit var resultTextView: TextView
     private lateinit var problemNumber: String
     private var score: Int = 5
+    private var gold = 10
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +44,6 @@ class ProblemActivity : AppCompatActivity() {
     }
 
     private fun initializeViews() {
-        resultTextView = findViewById(R.id.result_text)
         deleteButton = findViewById(R.id.delete_button)
         disasamButton = findViewById(R.id.disassemble_button)
     }
@@ -142,7 +141,7 @@ class ProblemActivity : AppCompatActivity() {
         val imageView = operatorView.getChildAt(0) as? ImageView
         setTextViewConstraints(operatorView, newTextView, imageView!!,50,60)
 
-        val rightText = expr.left.string
+        val rightText = expr.right.string
         val newTextView2 = TextView(this).apply {
             this.text = rightText
             this.id = View.generateViewId()
@@ -213,10 +212,6 @@ class ProblemActivity : AppCompatActivity() {
     }
 
     private fun createDraggableItem(operator: Operator) {
-        if (operator is Operator.Equal) {
-            createDraggableItemView("[] = []", operator)
-            return
-        }
         val text = when (operator) {
             is Operator.Addition -> "[] + []"
             is Operator.Subtraction -> "[] - []"
@@ -228,6 +223,7 @@ class ProblemActivity : AppCompatActivity() {
             is Operator.Cube -> "[]^^"
             is Operator.Cbrt -> "cbrt[]"
             is Operator.Colon -> "[] : []"
+            is Operator.Equal -> "[] = []"
             else -> "[]"
         }
         val imgSrcId = when (operator) {
@@ -392,7 +388,6 @@ class ProblemActivity : AppCompatActivity() {
                         createDraggableExpr(draggedViewTag.expr)
                     }
                     subtractScoreForOperator(draggedViewTag.symbol)
-                    resultTextView.text = "${score}"
                     createDraggableItem(getOperator(draggedViewTag.symbol)!!)
 
                 } else if (x >= deleteButtonX && x <= deleteButtonX + deleteButtonWidth &&
@@ -504,9 +499,9 @@ class ProblemActivity : AppCompatActivity() {
             setTextViewConstraints(operatorView, newTextView, imageView!!, 180, 80)
 
         } else if (inputExpression is Expression && operator.leftExpression == null) {
-            mergeLayouts(operatorView, numberView, 600)
+            mergeLayouts(operatorView, numberView, 480)
         } else {
-            mergeLayouts(operatorView, numberView, -600)
+            mergeLayouts(operatorView, numberView, -480)
         }
 
         if (operator.leftExpression == null) {
@@ -572,7 +567,6 @@ class ProblemActivity : AppCompatActivity() {
         val newExpression = Expression.UnaryExpression(operator, operator.leftExpression!!)
         addScoreForOperator(operator.symbol)
         operatorView.tag = newExpression
-        resultTextView.text = "$score"
         operator.leftExpression = null
         operator.rightExpression = null
     }
@@ -608,7 +602,7 @@ class ProblemActivity : AppCompatActivity() {
 
     private fun handleEqualExpression() {
         val resultIntent = Intent().apply { putExtra("SCORE", score) }
-        val data = arrayListOf(score, 10)
+        val data = arrayListOf(score, gold)
         resultIntent.putIntegerArrayListExtra("SCORE", data)
         setResult(RESULT_OK, resultIntent)
         finish()
@@ -618,8 +612,6 @@ class ProblemActivity : AppCompatActivity() {
         val operator = newExpression.operator // Extract the operator from newExpression
         addScoreForOperator(operator.symbol)
         operatorView.tag = newExpression
-        resultTextView.text = "$score"
-        resultTextView.append("\n${newExpression.value}, (${newExpression.string})") // Append the result instead of replacing the score
         operator.leftExpression = null
         operator.rightExpression = null
     }
