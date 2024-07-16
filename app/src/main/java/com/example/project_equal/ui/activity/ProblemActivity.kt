@@ -107,7 +107,7 @@ class ProblemActivity : AppCompatActivity() {
             else -> "[]"
         }
         val imgSrcId = when (operator) {
-            is Operator.Addition -> R.drawable.plusbutton
+            is Operator.Addition -> R.drawable.explus
             is Operator.Subtraction -> R.drawable.minusbutton
             is Operator.Multiplication -> R.drawable.multiplybutton
             is Operator.Division -> R.drawable.dividebutton
@@ -117,12 +117,12 @@ class ProblemActivity : AppCompatActivity() {
             is Operator.Cube -> R.drawable.power3button
             is Operator.Cbrt -> R.drawable.root3button
             is Operator.Equal -> R.drawable.equalbutton
-            else -> R.drawable.plusbutton
+            else -> R.drawable.number
         }
         createDraggableItemView(text, operator, imgSrcId)
     }
 
-    private fun createDraggableItemView(text: String, tag: Any, imageResId: Int = R.drawable.plus) {
+    private fun createDraggableItemView(text: String, tag: Any, imageResId: Int = R.drawable.number) {
 
         val draggableItemLayout = RelativeLayout(this).apply {
             this.tag = tag
@@ -136,7 +136,6 @@ class ProblemActivity : AppCompatActivity() {
         val textView = TextView(this).apply {
             this.text = text
             id = View.generateViewId()
-            // 텍스트 중앙 정렬
             this.gravity = Gravity.CENTER
         }
 
