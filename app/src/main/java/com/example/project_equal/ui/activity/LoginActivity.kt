@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.project_equal.R
@@ -41,7 +42,7 @@ class LoginActivity : AppCompatActivity() {
 
         apiService = retrofit.create(ApiService::class.java)
 
-        val loginButton: Button = findViewById(R.id.loginButton)
+        val loginButton: ImageButton = findViewById(R.id.loginButton)
         loginButton.setOnClickListener {
             val userIdInput: EditText = findViewById(R.id.inputId)
             val passwordInput: EditText = findViewById(R.id.inputPassword)
@@ -95,7 +96,7 @@ class LoginActivity : AppCompatActivity() {
             })
         }
 
-        val signUpButton: Button = findViewById(R.id.signUpButton)
+        val signUpButton: ImageButton = findViewById(R.id.signUpButton)
         signUpButton.setOnClickListener {
             val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)
