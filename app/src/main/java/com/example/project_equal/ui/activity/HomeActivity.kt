@@ -14,7 +14,6 @@ import android.os.Looper
 import android.util.Log
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.RelativeLayout
@@ -131,17 +130,12 @@ class HomeActivity : AppCompatActivity() {
                     getPlayerInfo(it)
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(
-                            this@HomeActivity,
-                            "Failed to fetch player information.",
-                            Toast.LENGTH_SHORT
-                        ).show()
+
                         Log.e("HomeActivity", "Error: ${e.message}")
                     }
                 }
             }
         } ?: run {
-            Toast.makeText(this@HomeActivity, "User ID not found.", Toast.LENGTH_SHORT).show()
         }
     }
 

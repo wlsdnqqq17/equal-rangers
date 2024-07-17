@@ -6,7 +6,6 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.project_equal.R
 import com.example.project_equal.network.ApiService
@@ -63,19 +62,16 @@ class SignUpActivity : AppCompatActivity() {
                     if (response.isSuccessful) {
                         val signUpResponse = response.body()
                         Log.d("SignUpActivity", "Sign up successful: ${signUpResponse?.user_id}")
-                        //Toast.makeText(this@SignUpActivity, "Sign up successful: ${signUpResponse?.user_id}", Toast.LENGTH_LONG).show()
 
                         val intent = Intent(this@SignUpActivity, LoginActivity::class.java)
                         startActivity(intent)
                     } else {
                         Log.e("SignUpActivity", "Sign up failed with status code: ${response.message()}")
-                        //Toast.makeText(this@SignUpActivity, "Sign up failed with status code: ${response.code()}", Toast.LENGTH_LONG).show()
                     }
                 }
 
                 override fun onFailure(call: Call<SignUpResponse>, t: Throwable) {
                     Log.e("SignUpActivity", "Sign up failed: ${t.message}")
-                    Toast.makeText(this@SignUpActivity, "Sign up failed: ${t.message}", Toast.LENGTH_LONG).show()
                 }
             })
         }

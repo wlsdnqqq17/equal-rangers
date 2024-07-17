@@ -7,7 +7,6 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.example.project_equal.R
@@ -195,7 +194,6 @@ class ThreeChoiceActivity : AppCompatActivity() {
             score += scoreGain[0]
             gold += scoreGain[1]
             adjustTime(TIME_ADJUSTMENT)
-            Toast.makeText(this, "Score: $score, Gold:$gold", Toast.LENGTH_LONG).show()
         }
     }
 

@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.project_equal.R
 
@@ -21,10 +20,8 @@ class MainActivity : AppCompatActivity() {
         Log.d("MainActivity", "User Token: ${userToken}")
         if (userToken != null) {
             Log.d("MainActivity", "User Token: $userToken")
-            //Toast.makeText(this, "Welcome back, User ID: $userToken", Toast.LENGTH_LONG).show()
         } else {
             Log.d("MainActivity", "No login info found, redirecting to LoginActivity")
-            Toast.makeText(this, "Please log in", Toast.LENGTH_LONG).show()
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
             finish()

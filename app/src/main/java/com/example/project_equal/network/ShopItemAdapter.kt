@@ -1,7 +1,7 @@
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -17,7 +17,7 @@ class ShopItemAdapter(
         private val itemName: TextView = itemView.findViewById(R.id.item_name)
         private val itemPrice: TextView = itemView.findViewById(R.id.item_price)
         private val itemImage: ImageView = itemView.findViewById(R.id.item_image)
-        private val buyButton: Button = itemView.findViewById(R.id.buy_button)
+        private val buyButton: ImageButton = itemView.findViewById(R.id.buy_button)
 
         fun bind(item: ShopItem) {
             itemName.text = item.name

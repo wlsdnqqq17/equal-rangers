@@ -8,7 +8,6 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.project_equal.R
 import com.example.project_equal.network.ApiService
@@ -74,24 +73,20 @@ class LoginActivity : AppCompatActivity() {
                             // 토큰 저장
                             File(filesDir, "tokens.json").writeText(tokens)
 
-                            Toast.makeText(this@LoginActivity, "Login successful!", Toast.LENGTH_SHORT).show()
 
                             val intent = Intent(this@LoginActivity, HomeActivity::class.java)
                             startActivity(intent)
                             finish() // LoginActivity 종료
                         } else {
                             Log.e("LoginActivity", "Login response body is null")
-                            Toast.makeText(this@LoginActivity, "Login failed: Empty response body", Toast.LENGTH_LONG).show()
                         }
                     } else {
                         Log.e("LoginActivity", "Login failed with status code: ${response.code()}")
-                        Toast.makeText(this@LoginActivity, "Login failed with status code: ${response.code()}", Toast.LENGTH_LONG).show()
                     }
                 }
 
                 override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
                     Log.e("LoginActivity", "Login failed: ${t.message}")
-                    Toast.makeText(this@LoginActivity, "Login failed: ${t.message}", Toast.LENGTH_LONG).show()
                 }
             })
         }
