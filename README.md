@@ -82,6 +82,9 @@ https://github.com/wlsdnqqq17
 
 AndroidStudio/Kotlin
 
+# **애플리케이션**
+https://drive.google.com/file/d/1-BtKX_LGgfzCage7xRpcnDlRrwhNJH47/view?usp=sharing
+
 Django
 
 MySQL
