@@ -93,14 +93,14 @@ class GameResult : AppCompatActivity() {
                 val response = playerManager.updatePlayerInfo(userId, updatedPlayerData, accessToken)
 
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(this@GameResult, "Player highscore updated: ${response.highscore}", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(this@GameResult, "Player highscore updated: ${response.highscore}", Toast.LENGTH_SHORT).show()
                 }
 
                 updateRank(apiService, accessToken)
             } catch (e: Exception) {
                 Log.e("game_result", "Failed to update player highscore: ${e.message}")
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(this@GameResult, "Failed to update player highscore", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(this@GameResult, "Failed to update player highscore", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -116,7 +116,7 @@ class GameResult : AppCompatActivity() {
 
                 if (response.isSuccessful) {
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(this@GameResult, "Rank updated successfully", Toast.LENGTH_SHORT).show()
+                        //Toast.makeText(this@GameResult, "Rank updated successfully", Toast.LENGTH_SHORT).show()
                     }
                 } else {
                     if (response.code() == 403 || response.code() == 401) {
@@ -126,13 +126,13 @@ class GameResult : AppCompatActivity() {
                         return@launch updateRank(apiService, newAccessToken)
                     }
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(this@GameResult, "Failed to update rank: ${response.code()}", Toast.LENGTH_SHORT).show()
+                        //Toast.makeText(this@GameResult, "Failed to update rank: ${response.code()}", Toast.LENGTH_SHORT).show()
                     }
                 }
             } catch (e: Exception) {
                 Log.e("game_result", "Failed to update rank: ${e.message}")
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(this@GameResult, "Failed to update rank", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(this@GameResult, "Failed to update rank", Toast.LENGTH_SHORT).show()
                 }
             }
         }
