@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
         Log.d("MainActivity", "User Token: ${userToken}")
         if (userToken != null) {
             Log.d("MainActivity", "User Token: $userToken")
-            Toast.makeText(this, "Welcome back, User ID: $userToken", Toast.LENGTH_LONG).show()
+            //Toast.makeText(this, "Welcome back, User ID: $userToken", Toast.LENGTH_LONG).show()
         } else {
             Log.d("MainActivity", "No login info found, redirecting to LoginActivity")
             Toast.makeText(this, "Please log in", Toast.LENGTH_LONG).show()
