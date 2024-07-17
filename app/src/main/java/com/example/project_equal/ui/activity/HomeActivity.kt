@@ -128,7 +128,6 @@ class HomeActivity : AppCompatActivity() {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     val accessToken = getAccessToken()
-                    Log.d("IN HOMEACTIVITY", accessToken)
                     getPlayerInfo(it)
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
@@ -194,28 +193,6 @@ class HomeActivity : AppCompatActivity() {
             .create()
     }
 
-
-    private fun showShopDialog() {
-        val dialog = BottomSheetDialog(this)
-        val dialogView = layoutInflater.inflate(R.layout.ranking_bottom_sheet, null)
-        dialog.setContentView(dialogView)
-
-        val rankingList = dialogView.findViewById<RecyclerView>(R.id.ranking_list)
-        rankingList.layoutManager = LinearLayoutManager(this)
-
-        dialog.show()
-
-        CoroutineScope(Dispatchers.Main).launch {
-            try {
-                val rankings = fetchRankings()
-                rankingList.adapter = RankingAdapter(rankings)
-            } catch (e: Exception) {
-                // Handle error
-                Log.e("HomeActivity", "Failed to fetch rankings: ${e.message}")
-                Toast.makeText(this@HomeActivity, "Failed to fetch rankings", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
 
 
     private fun showRankingDialog() {
@@ -375,77 +352,77 @@ class HomeActivity : AppCompatActivity() {
         var result = floatArrayOf(0f, 0f, 0f, 0f) // 점프 높이, 점프간 쉬는 시간, x축 점프 거리, 방향 바꿀 확률
         when(type) {
             0 -> {
-                character.setImageResource(R.drawable.plus)
+                character.setImageResource(R.drawable.plusbutton)
                 result[0] = -150f
                 result[1] = 500f
                 result[2] = 100f
                 result[3] = 500f
             }
             1 -> {
-                character.setImageResource(R.drawable.minus)
+                character.setImageResource(R.drawable.minusbutton)
                 result[0] = -150f
                 result[1] = 500f
                 result[2] = 100f
                 result[3] = 500f
             }
             2 -> {
-                character.setImageResource(R.drawable.negation)
+                character.setImageResource(R.drawable.negationbutton)
                 result[0] = -100f
                 result[1] = 2000f
                 result[2] = 100f
                 result[3] = 500f
             }
             3 -> {
-                character.setImageResource(R.drawable.multiply)
+                character.setImageResource(R.drawable.multiplybutton)
                 result[0] = -200f
                 result[1] = 400f
                 result[2] = 100f
                 result[3] = 500f
             }
             4 -> {
-                character.setImageResource(R.drawable.divide)
-                result[0] = -500f
+                character.setImageResource(R.drawable.dividebutton)
+                result[0] = -400f
                 result[1] = 50f
                 result[2] = 100f
                 result[3] = 800f
             }
             5 -> {
-                character.setImageResource(R.drawable.root2)
+                character.setImageResource(R.drawable.root2button)
                 result[0] = -200f
                 result[1] = 500f
                 result[2] = 100f
                 result[3] = 800f
             }
             6 -> {
-                character.setImageResource(R.drawable.root3)
+                character.setImageResource(R.drawable.root3button)
                 result[0] = -200f
                 result[1] = 500f
                 result[2] = 100f
                 result[3] = 800f
             }
             7 -> {
-                character.setImageResource(R.drawable.power2)
+                character.setImageResource(R.drawable.power2button)
                 result[0] = -100f
                 result[1] = 500f
                 result[2] = 200f
                 result[3] = 800f
             }
             8 -> {
-                character.setImageResource(R.drawable.power3)
+                character.setImageResource(R.drawable.power3button)
                 result[0] = -100f
                 result[1] = 500f
                 result[2] = 200f
                 result[3] = 800f
             }
             9 -> {
-                character.setImageResource(R.drawable.colon)
-                result[0] = -1000f
+                character.setImageResource(R.drawable.colonbutton)
+                result[0] = -500f
                 result[1] = 400f
-                result[2] = 400f
+                result[2] = 300f
                 result[3] = 500f
             }
             10 -> {
-                character.setImageResource(R.drawable.equal)
+                character.setImageResource(R.drawable.equalbutton)
                 result[0] = 0f
                 result[1] = 0f
                 result[2] = 100f
@@ -470,8 +447,8 @@ class HomeActivity : AppCompatActivity() {
         var moveDistance = param[2] // 초기 이동 거리 설정
         val prob_change = param[3]
 
-        params.width = 200 // 원하는 가로 크기 설정
-        params.height = 200
+        params.width = 300 // 원하는 가로 크기 설정
+        params.height = 300
 
         // 캐릭터를 배치할 위치 설정
         params.leftMargin = index * 300 % container.width// 각 캐릭터를 좌우로 배치
