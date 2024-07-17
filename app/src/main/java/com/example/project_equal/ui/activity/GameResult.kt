@@ -70,7 +70,7 @@ class GameResult : AppCompatActivity() {
     }
 
     private fun updateGold(gold: Int) {
-        goldTextView.text = "Gold: $gold"
+        goldTextView.text = "부품: $gold"
     }
 
     private fun animateScore(startScore: Int, endScore: Int) {
@@ -79,7 +79,7 @@ class GameResult : AppCompatActivity() {
 
         animator.addUpdateListener { animation ->
             val animatedValue = animation.animatedValue as Int
-            scoreTextView.text = "Score: $animatedValue"
+            scoreTextView.text = "점수: $animatedValue"
         }
 
         animator.start()

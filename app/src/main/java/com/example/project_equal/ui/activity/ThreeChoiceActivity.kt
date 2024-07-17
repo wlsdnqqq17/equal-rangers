@@ -24,6 +24,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
 import java.util.Random
 import PlayerManager
+import android.graphics.Color
 import android.widget.Button
 
 class ThreeChoiceActivity : AppCompatActivity() {
@@ -32,6 +33,7 @@ class ThreeChoiceActivity : AppCompatActivity() {
     lateinit var btn1: TextView
     lateinit var btn2: TextView
     lateinit var btn3: TextView
+    lateinit var timeview: TextView
     lateinit var nextButton: Button
     lateinit var playerManager: PlayerManager
     var score: Int = 0
@@ -47,6 +49,7 @@ class ThreeChoiceActivity : AppCompatActivity() {
             if (remainingTime > 0) {
                 remainingTime -= 1000
                 nextButton.text = "Next (${remainingTime / 1000}s)"
+                timeview.text = "Time: ${remainingTime / 1000}"
                 handler.postDelayed(this, 1000)
             } else {
                 navigateToGameResult()
@@ -69,6 +72,7 @@ class ThreeChoiceActivity : AppCompatActivity() {
         btn1 = findViewById(R.id.choice1Button)
         btn2 = findViewById(R.id.choice2Button)
         btn3 = findViewById(R.id.choice3Button)
+        timeview = findViewById(R.id.time_view)
         nextButton = findViewById(R.id.next_button)
 
         // Retrofit 인스턴스 생성
@@ -212,6 +216,10 @@ class ThreeChoiceActivity : AppCompatActivity() {
         if (remainingTime < 0) {
             remainingTime = 0
         }
+        if (remainingTime <= 5000) {
+            timeview.setTextColor(Color.RED)
+        }
+        timeview.text = "Time: ${remainingTime / 1000}"
         nextButton.text = "Next (${remainingTime / 1000}s)"
         handler.removeCallbacks(timeoutRunnable)
         handler.postDelayed(timeoutRunnable, remainingTime)

@@ -28,7 +28,7 @@ class ProblemActivity : AppCompatActivity() {
     private lateinit var disasamButton: ImageButton
     private lateinit var problemNumber: String
     private var score: Int = 5
-    private var gold = 10
+    private var gold = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -490,13 +490,13 @@ class ProblemActivity : AppCompatActivity() {
             setTextViewConstraints(operatorView, newTextView, imageView!!,280,60)
         } else if (operator is Operator.Negation || operator is Operator.Sqrt || operator is Operator.Square || operator is Operator.Cube || operator is Operator.Cbrt){
             val newTextView = TextView(this).apply {
-                this.text = inputExpression.value.toString()
+                this.text = Math.round(inputExpression.value).toString();
                 this.id = View.generateViewId()
                 Log.d(TAG, "newTextView: ${this.id}")
                 this.gravity = Gravity.CENTER_VERTICAL
             }
             operatorView.addView(newTextView)
-            setTextViewConstraints(operatorView, newTextView, imageView!!, 180, 80)
+            setTextViewConstraints(operatorView, newTextView, imageView!!, 160, 60)
 
         } else if (inputExpression is Expression && operator.leftExpression == null) {
             mergeLayouts(operatorView, numberView, 480)

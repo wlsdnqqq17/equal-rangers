@@ -21,7 +21,7 @@ class ShopItemAdapter(
 
         fun bind(item: ShopItem) {
             itemName.text = item.name
-            itemPrice.text = "${item.price} 감자"
+            itemPrice.text = "${item.price} 부품"
             // Set item image if available
             itemImage.setImageResource(item.imageResId)
             buyButton.setOnClickListener { onBuyClick(item) }
