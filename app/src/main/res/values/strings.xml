@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Project_Equal</string>
+    <string name="app_name">이퀄레인저</string>
     <string name="cbrt">cbrt</string>
     <string name="cube">cube</string>
     <string name="sqrt">sqrt</string>

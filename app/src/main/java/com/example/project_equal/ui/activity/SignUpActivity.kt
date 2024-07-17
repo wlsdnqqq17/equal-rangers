@@ -63,13 +63,13 @@ class SignUpActivity : AppCompatActivity() {
                     if (response.isSuccessful) {
                         val signUpResponse = response.body()
                         Log.d("SignUpActivity", "Sign up successful: ${signUpResponse?.user_id}")
-                        Toast.makeText(this@SignUpActivity, "Sign up successful: ${signUpResponse?.user_id}", Toast.LENGTH_LONG).show()
+                        //Toast.makeText(this@SignUpActivity, "Sign up successful: ${signUpResponse?.user_id}", Toast.LENGTH_LONG).show()
 
                         val intent = Intent(this@SignUpActivity, LoginActivity::class.java)
                         startActivity(intent)
                     } else {
                         Log.e("SignUpActivity", "Sign up failed with status code: ${response.message()}")
-                        Toast.makeText(this@SignUpActivity, "Sign up failed with status code: ${response.code()}", Toast.LENGTH_LONG).show()
+                        //Toast.makeText(this@SignUpActivity, "Sign up failed with status code: ${response.code()}", Toast.LENGTH_LONG).show()
                     }
                 }
 

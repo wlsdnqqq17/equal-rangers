@@ -34,7 +34,6 @@ class ThreeChoiceActivity : AppCompatActivity() {
     lateinit var btn2: TextView
     lateinit var btn3: TextView
     lateinit var timeview: TextView
-    lateinit var nextButton: Button
     lateinit var playerManager: PlayerManager
     var score: Int = 0
     var gold:Int = 0
@@ -48,7 +47,6 @@ class ThreeChoiceActivity : AppCompatActivity() {
         override fun run() {
             if (remainingTime > 0) {
                 remainingTime -= 1000
-                nextButton.text = "Next (${remainingTime / 1000}s)"
                 timeview.text = "Time: ${remainingTime / 1000}"
                 handler.postDelayed(this, 1000)
             } else {
@@ -73,7 +71,6 @@ class ThreeChoiceActivity : AppCompatActivity() {
         btn2 = findViewById(R.id.choice2Button)
         btn3 = findViewById(R.id.choice3Button)
         timeview = findViewById(R.id.time_view)
-        nextButton = findViewById(R.id.next_button)
 
         // Retrofit 인스턴스 생성
         val retrofit = Retrofit.Builder()
@@ -87,9 +84,6 @@ class ThreeChoiceActivity : AppCompatActivity() {
         fetchProblems()
         setupButtonListeners()
 
-        nextButton.setOnClickListener {
-            navigateToGameResult()
-        }
     }
 
     private fun fetchProblems() {
@@ -220,7 +214,6 @@ class ThreeChoiceActivity : AppCompatActivity() {
             timeview.setTextColor(Color.RED)
         }
         timeview.text = "Time: ${remainingTime / 1000}"
-        nextButton.text = "Next (${remainingTime / 1000}s)"
         handler.removeCallbacks(timeoutRunnable)
         handler.postDelayed(timeoutRunnable, remainingTime)
     }
