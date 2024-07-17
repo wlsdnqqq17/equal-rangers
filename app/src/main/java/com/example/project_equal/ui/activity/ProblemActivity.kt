@@ -32,7 +32,7 @@ class ProblemActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_problemm)
+        setContentView(R.layout.activity_problem)
 
         initializeViews()
         setupListeners()
