@@ -1,10 +1,12 @@
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.util.Log
 import com.example.project_equal.network.ApiService
 import com.example.project_equal.network.PlayerData
 import com.example.project_equal.network.RefreshTokenRequest
 import com.example.project_equal.network.RefreshTokenResponse
+import com.example.project_equal.ui.activity.LoginActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType
@@ -84,6 +86,11 @@ class PlayerManager(private val apiService: ApiService, private val context: Con
         }
     }
 
+    private fun navigateToLogin() {
+        val intent = Intent(context, LoginActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        context.startActivity(intent)
+    }
     suspend fun refreshAccessToken(): String {
         return withContext(Dispatchers.IO) {
             val sharedPreferences = context.getSharedPreferences("login_prefs", Context.MODE_PRIVATE)
@@ -92,6 +99,7 @@ class PlayerManager(private val apiService: ApiService, private val context: Con
 
             val refreshRequest = RefreshTokenRequest(refreshToken)
             val refreshResponse: Response<RefreshTokenResponse> = apiService.refreshToken(refreshRequest).execute()
+
 
             if (refreshResponse.isSuccessful) {
                 val newTokens = refreshResponse.body()
@@ -109,6 +117,11 @@ class PlayerManager(private val apiService: ApiService, private val context: Con
                     throw IOException("Failed to refresh tokens: empty response body")
                 }
             } else {
+                if (refreshResponse.code() == 401) {
+                    Log.d("PlayerManager", "Refresh token expired or invalid. Redirecting to login.")
+                    navigateToLogin()
+                    throw IOException("Refresh token expired or invalid. Redirecting to login.")
+                }
                 throw IOException("Failed to refresh tokens: ${refreshResponse.code()}")
             }
         }
