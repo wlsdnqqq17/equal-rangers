@@ -1,3 +1,4 @@
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -87,9 +88,16 @@ class PlayerManager(private val apiService: ApiService, private val context: Con
     }
 
     private fun navigateToLogin() {
-        val intent = Intent(context, LoginActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-        context.startActivity(intent)
+        if (context is Activity) {
+            val intent = Intent(context, LoginActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+
+            context.finish()
+
+            context.startActivity(intent)
+        } else {
+            Log.e("navigateToLogin", "Provided context is not an Activity instance")
+        }
     }
     suspend fun refreshAccessToken(): String {
         return withContext(Dispatchers.IO) {

@@ -56,7 +56,7 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var highscoreTextView: TextView
     private lateinit var btnShowRanking: ImageButton
     private lateinit var random: Random
-    private lateinit var items : MutableList<Int>
+    private var items : MutableList<Int> = mutableListOf()
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var handler:Handler
     private var userGold = 0
