@@ -40,6 +40,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
+import java.util.Collections
 import java.util.Random
 import kotlin.math.abs
 
@@ -64,13 +65,13 @@ class HomeActivity : AppCompatActivity() {
         ShopItem("마니", 100, R.drawable.minus, 1),
         ShopItem("네기", 100, R.drawable.negation, 2),
         ShopItem("타니", 300, R.drawable.multiply, 3),
-        ShopItem("디비", 300, R.drawable.divide, 4),
+        ShopItem("디비", 400, R.drawable.divide, 4),
         ShopItem("퀘어", 500, R.drawable.root2, 5),
         ShopItem("큐트", 500, R.drawable.root3, 6),
         ShopItem("제리", 800, R.drawable.power2, 7),
         ShopItem("큐브", 800, R.drawable.power3, 8),
         ShopItem("코니", 1000, R.drawable.colon, 9),
-        ShopItem("쿼리", 2000, R.drawable.equal, 10),
+        ShopItem("쿼리", 7847, R.drawable.equal, 10),
     )
 
 
@@ -299,10 +300,11 @@ class HomeActivity : AppCompatActivity() {
         withContext(Dispatchers.Main) {
             userGold = playerData.gold
             userIdTextView.text = playerData.nickname
-            goldTextView.text = "당신의 감자: ${userGold.toString()}"
+            goldTextView.text = "당신의 부품: ${userGold.toString()}"
             highscoreTextView.text = "당신의 최고점수: ${playerData.highscore.toString()}"
             Log.d("PLAYERDATA", "${playerData.item}")
             items = playerData.item.toMutableList()
+            Collections.shuffle(items)
             setAnimation(items)
             Log.d(
                 "updateUI",

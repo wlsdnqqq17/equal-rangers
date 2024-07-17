@@ -49,6 +49,7 @@ class ThreeChoiceActivity : AppCompatActivity() {
             if (remainingTime > 0) {
                 remainingTime -= 1000
                 nextButton.text = "Next (${remainingTime / 1000}s)"
+                timeview.text = "Time: ${remainingTime / 1000}"
                 handler.postDelayed(this, 1000)
             } else {
                 navigateToGameResult()
