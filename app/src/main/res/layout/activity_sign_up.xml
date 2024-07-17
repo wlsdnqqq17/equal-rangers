@@ -91,11 +91,13 @@
         />
 
 
-    <Button
+    <ImageButton
         android:id="@+id/signUpButton"
         android:layout_width="240dp"
-        android:layout_height="wrap_content"
-        android:text="Sign Up"
+        android:layout_height="120dp"
+        android:src="@drawable/signupcompletebutton"
+        android:background="@null"
+        android:scaleType="fitCenter"
         app:layout_constraintTop_toBottomOf="@id/signUpLastName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
