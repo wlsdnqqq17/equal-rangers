@@ -439,15 +439,15 @@ class HomeActivity : AppCompatActivity() {
             }
             9 -> {
                 character.setImageResource(R.drawable.colon)
-                result[0] = -400f
-                result[1] = 150f
-                result[2] = 150f
+                result[0] = -1000f
+                result[1] = 400f
+                result[2] = 400f
                 result[3] = 500f
             }
             10 -> {
                 character.setImageResource(R.drawable.equal)
                 result[0] = 0f
-                result[1] = 500f
+                result[1] = 0f
                 result[2] = 100f
                 result[3] = 500f
             }
@@ -491,19 +491,32 @@ class HomeActivity : AppCompatActivity() {
         val moveAnimatorX = ObjectAnimator.ofFloat(character, "translationX", currentTranslationX, currentTranslationX + moveDistance)
         moveAnimatorX.duration = 600
 
+        val pauseAnimator = ObjectAnimator.ofFloat(character, "translationY", default_h, default_h)
 
         val jumpAnimatorSet = AnimatorSet()
 
-        val pauseAnimator = ObjectAnimator.ofFloat(character, "translationY", default_h, default_h)
-        pauseAnimator.duration = waitTime.toLong() // 멈춤 지속 시간 (0.5초)
-
         jumpAnimatorSet.playTogether(jumpUpAnimator, moveAnimatorX)
-        jumpAnimatorSet.playSequentially(jumpUpAnimator, jumpDownAnimator, pauseAnimator)
+        Log.d("test", "$waitTime")
+        if(waitTime == 0f){
+            jumpAnimatorSet.playSequentially(jumpUpAnimator, jumpDownAnimator)
+        }
+        else {
+
+            pauseAnimator.duration = waitTime.toLong() // 멈춤 지속 시간 (0.5초)
+
+            jumpAnimatorSet.playSequentially(jumpUpAnimator, jumpDownAnimator, pauseAnimator)
+        }
 
         jumpAnimatorSet.addListener(object : Animator.AnimatorListener {
             override fun onAnimationStart(animation: Animator) {}
             override fun onAnimationEnd(animation: Animator) {
-                val randomDuration = Random().nextInt(waitTime.toInt()) / 2 + waitTime
+                var randomDuration = 0f
+                if(waitTime == 0f){
+                    randomDuration = 0f
+                }
+                else {
+                    randomDuration = Random().nextInt(waitTime.toInt()) / 2 + waitTime
+                }
                 currentTranslationX += moveDistance
                 character.translationX = currentTranslationX
 

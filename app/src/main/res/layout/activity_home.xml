@@ -35,14 +35,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="sampleId"
+        android:paddingLeft="20dp"
         android:fontFamily="@font/gagujangemedium"
         android:textSize = "24dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.1"
-        app:layout_constraintHorizontal_bias="0.1"/>
+        app:layout_constraintTop_toBottomOf="@+id/btn_show_ranking"/>
 
 
 
@@ -51,24 +48,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="당신의 최고 점수: 0"
+        android:paddingLeft="20dp"
+
         android:fontFamily="@font/gagujangemedium"
         android:textSize = "24dp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/userid_text"
-        app:layout_constraintHorizontal_bias="0.1"/>
+        app:layout_constraintTop_toBottomOf="@+id/userid_text"/>
 
     <TextView
-        android:id = "@+id/gold_text"
+        android:id="@+id/gold_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="당신의 감자:0"
+        android:paddingLeft="20dp"
         android:fontFamily="@font/gagujangemedium"
-        android:textSize = "24dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="24dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/highscore"
-        app:layout_constraintHorizontal_bias="0.1"/>
+        app:layout_constraintTop_toBottomOf="@+id/highscore" />
 
 
 
