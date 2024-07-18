@@ -18,10 +18,12 @@
 - 확장 형태: 본 게임 화면 (등식 만들 때)
 
 ## 스플래시 화면
-
+![f](https://github.com/user-attachments/assets/a2cb1dee-5140-4383-9b08-3d35daddae88)
 - 이쿼리들이 자동차를 배경으로 날아가는 이미지를 표현
 
 ## 홈 화면
+
+![f](https://github.com/user-attachments/assets/d50c8e85-a83b-434b-9870-ad164e783413)
 
 - 애니메이션
 
@@ -29,9 +31,19 @@
 
 # 홈 화면
 
+
+
+- 홈 화면에서는 유저의 닉네임, 최고 점수, 부품(게임 내 화폐)등을 확인하실 수 있습니다
+- 랭킹 버튼을 누르면 서버 내의 다양한 유저들의 점수와 비교해 볼 수 있습니다
+- 상점을 누르면 부품을 사용해서 이쿼리들을 소환하실 수 있습니다
+- 소환하신 이쿼리들은 홈 화면에서 뛰어놀고 있습니다
+- 이쿼리들은 성격마다 뛰는 스타일이 모두 다릅니다. 모든 이쿼리들을 수집해봅시다!
+  
 # 게임
 
 ## 문제 선택 화면
+
+![image](https://github.com/user-attachments/assets/ab30a73b-2ac5-4fd3-ac63-ba2ad328204a)
 
 - 게임 시작 버튼을 누르면 문제 선택 화면으로 넘어갑니다.
 - 문제는 어려운 문제와 쉬운 문제가 섞여서 나오기 때문에 세 가지 문제 중 하나를 선택할 수 있게 했습니다.
@@ -40,6 +52,9 @@
 - 문제를 푸는 데 성공하면 5초를 돌려 받고 문제를 풀지 못해 뒤로가기 버튼을 누른다면 5초를 돌려받지 못합니다.
 
 ## 문제 풀이 화면
+![problem1](https://github.com/user-attachments/assets/37eaf25f-9d48-41da-b797-1e06ba10b831)
+![problem2](https://github.com/user-attachments/assets/ebfa5d4d-de2d-4811-ad9b-628945947869)
+![problem3](https://github.com/user-attachments/assets/9d0ef61d-00b8-4685-94ce-b39e2a876f9f)
 
 - 문제를 클릭하면 시간이 멈추고 문제를 풀 수 있는 공간에 들어옵니다.
 - 화면 상단에서 풀 문제를 볼 수 있습니다.
@@ -54,6 +69,9 @@
 - 참이 확인되면 부품을 하나 얻고 사용한 연산자의 종류에 따라 점수를 얻을 수 있습니다.
 
 ## 결과 화면
+
+![스크린샷 2024-07-17 오후 8 25 55](https://github.com/user-attachments/assets/76911b0f-d53d-4726-8eef-dc99c637dc96)
+
 
 - 주어진 시간이 모두 종료되면 결과 화면으로 넘어옵니다.
 - 결과 화면에서는 내 점수 기록과 얻은 부품 수를 확인할 수 있습니다.
@@ -72,19 +90,17 @@
 
 ## 서버 통신 기술
 
-## Contributers
+- 클라이언트는 서버에게서 AccessToken과 RefreshToken을 발급받습니다
+- AccessToken은 짧은 시간동안만 지속되고, RefreshToken은 비교적 오래 지속됩니다
+- AccessToken으로 서버에 API 실행을 요청하고, AccessToken이 만료되면 RefreshToken으로 재발급을 요청합니다
+- RefreshToken까지 만료되면 다시 로그인 해야합니다!
 
-https://github.com/joseph1723
-
-https://github.com/wlsdnqqq17
 
 # **기술 스택**
 
-AndroidStudio/Kotlin
+Frontend: AndroidStudio/Kotlin
+Backend: Django Restframework/AWS
+Algorithm: Python
 
 # **애플리케이션**
 https://drive.google.com/file/d/1-BtKX_LGgfzCage7xRpcnDlRrwhNJH47/view?usp=sharing
-
-Django
-
-MySQL
