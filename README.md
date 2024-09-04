@@ -18,6 +18,7 @@
 - 확장 형태: 본 게임 화면 (등식 만들 때)
 
 ## 스플래시 화면
+
 ![f](https://github.com/user-attachments/assets/a2cb1dee-5140-4383-9b08-3d35daddae88)
 - 이쿼리들이 자동차를 배경으로 날아가는 이미지를 표현
 
